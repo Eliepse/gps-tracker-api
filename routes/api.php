@@ -26,5 +26,5 @@ Route::middleware('auth:api')
 		'only' => ['store', 'show', 'index'],
 	]);
 
-Route::middleware('auth:api')->post('track/new', RequestNewGpsTrackController::class);
 Route::middleware('auth:api')->post('track/{track}/points', StoreGpsPointsController::class);
+Route::middleware('auth:api')->post('track', RequestNewGpsTrackController::class);
