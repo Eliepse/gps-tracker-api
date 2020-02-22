@@ -6,7 +6,6 @@ use App\App;
 use App\GpsTrack;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class RequestNewGpsTrackController
 {

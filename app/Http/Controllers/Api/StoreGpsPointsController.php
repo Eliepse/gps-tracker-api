@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\App;
-use App\GpsPoint;
 use App\GpsTrack;
 use App\Http\Requests\StoreGpsTrackRequest;
-use Illuminate\Http\Request;
 
 class StoreGpsPointsController
 {
