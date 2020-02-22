@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class GpsPoint extends Model
 {
 	protected $table = "gps_points";
-	
+
 	protected $guarded = [];
 
 

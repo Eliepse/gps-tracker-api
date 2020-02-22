@@ -17,7 +17,7 @@ class CreateAppsTable extends Migration
 			$table->bigIncrements('id');
 			$table->string('name');
 			$table->uuid('uuid');
-			$table->string('password', 32);
+			$table->string('password', 128);
 			$table->string('api_token', 80)
 				->unique()
 				->nullable()
