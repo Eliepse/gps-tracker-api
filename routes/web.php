@@ -11,12 +11,15 @@
 |
 */
 
+use App\Http\Controllers\dashboard\DashboardController;
 use App\Http\Controllers\GpsTrackController;
 use App\Http\Controllers\GpsTrackSvgController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'map');
 Route::resource('tracks', GpsTrackController::class, [
-	'only' => ['index', 'show', 'store']
+	'only' => ['index', 'show', 'store'],
 ]);
 Route::get('/tracks/{track}/svg', GpsTrackSvgController::class);
+
+Route::get('/app/{app}', [DashboardController::class, 'home']);

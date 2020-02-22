@@ -6,7 +6,6 @@ use App\GpsPoint;
 use App\GpsTrack;
 use App\Http\Requests\StoreGpsPointsRequest;
 use Carbon\Carbon;
-use stdClass;
 
 class StoreGpsPointsController
 {
