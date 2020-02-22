@@ -11,6 +11,12 @@ class GpsPoint extends Model
 
 	protected $guarded = [];
 
+	public $timestamps = false;
+
+	protected $dates = [
+		"time",
+	];
+
 
 	public function track(): BelongsTo
 	{

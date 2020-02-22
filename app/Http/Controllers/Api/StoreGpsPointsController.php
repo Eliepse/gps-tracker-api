@@ -2,15 +2,28 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\GpsPoint;
 use App\GpsTrack;
-use App\Http\Requests\StoreGpsTrackRequest;
+use App\Http\Requests\StoreGpsPointsRequest;
+use Carbon\Carbon;
+use stdClass;
 
 class StoreGpsPointsController
 {
-	public function __invoke(StoreGpsTrackRequest $request, GpsTrack $track)
+	public function __invoke(StoreGpsPointsRequest $request, GpsTrack $track)
 	{
-		$track->points()->createMany($request->get('points'));
+		$points = collect($request->get("points"))
+			->transform(function (array $item) {
+				return new GpsPoint([
+					'latitude' => $item['latitude'],
+					'longitude' => $item['longitude'],
+					'accuracy' => $item['accuracy'],
+					'time' => Carbon::createFromTimestamp(round($item['time'] / 1000)),
+				]);
+			});
 
-		return response()->json();
+		$track->points()->saveMany($points);
+
+		return response('', 200);
 	}
 }

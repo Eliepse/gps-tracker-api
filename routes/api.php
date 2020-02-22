@@ -21,10 +21,10 @@ use Illuminate\Support\Facades\Route;
 //		return $request->user();
 //	});
 
-Route::middleware('auth:api')
-	->resource('tracks', GpsTrackController::class, [
-		'only' => ['store', 'show', 'index'],
-	]);
+//Route::middleware('auth:api')
+//	->resource('tracks', GpsTrackController::class, [
+//		'only' => ['store', 'show', 'index'],
+//	]);
 
 Route::middleware('auth:api')->post('track/{track}/points', StoreGpsPointsController::class);
 Route::middleware('auth:api')->post('track', RequestNewGpsTrackController::class);
