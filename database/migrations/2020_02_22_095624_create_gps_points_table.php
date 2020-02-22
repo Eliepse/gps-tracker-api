@@ -23,7 +23,7 @@ class CreateGpsPointsTable extends Migration
 
 			$table->foreign('gps_track_id')
 				->references('id')
-				->on('gps_track')
+				->on('gps_tracks')
 				->onUpdate('cascade')
 				->onDelete('cascade');
 		});

@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class GpsTrack extends Model
 {
+	protected $table = "gps_tracks";
+
 	protected $fillable = ['nodes', 'app_id'];
 
 	protected $casts = [
