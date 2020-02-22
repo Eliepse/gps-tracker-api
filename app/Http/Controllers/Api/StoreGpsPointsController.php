@@ -11,6 +11,6 @@ class StoreGpsPointsController
 	{
 		$track->points()->createMany($request->get('points'));
 
-		return response(null, 200)->json();
+		return response()->json();
 	}
 }

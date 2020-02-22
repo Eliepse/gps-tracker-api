@@ -20,7 +20,7 @@ class RequestNewGpsTrackController
 		/** @var GpsTrack $track */
 		$track = $app->tracks()->save(new GpsTrack(['nodes' => []]));
 
-		return response(null, 200)->json([
+		return response()->json([
 			'track_id' => $track->id,
 		]);
 	}
