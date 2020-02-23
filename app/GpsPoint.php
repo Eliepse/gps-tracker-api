@@ -36,6 +36,13 @@ class GpsPoint extends Model
 
 	public function distanceTo(GpsPoint $point): float
 	{
-		return sqrt(pow($point->latitude - $this->latitude, 2) + pow($point->longitude - $this->longitude, 2));
+		$eQuatorialEarthRadius = 6378.1370;
+		$d2r = pi() / 180;
+		$dlong = ($point->longitude - $this->longitude) * $d2r;
+		$dlat = ($point->latitude - $this->latitude) * $d2r;
+		$a = pow(sin($dlat / 2.0), 2.0) + cos($this->latitude * $d2r) * cos($point->latitude * $d2r) * pow(sin($dlong / 2.0), 2.0);
+		$c = 2.0 * atan2(sqrt($a), sqrt(1.0 - $a));
+
+		return $eQuatorialEarthRadius * $c;
 	}
 }
