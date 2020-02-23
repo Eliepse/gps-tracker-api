@@ -23,6 +23,6 @@ class StoreGpsPointsController
 
 		$track->points()->saveMany($points);
 
-		return response('', 200);
+		return response()->json(['status' => 'ok']);
 	}
 }
