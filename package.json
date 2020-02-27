@@ -13,6 +13,8 @@
         "axios": "^0.19",
         "cross-env": "^7.0",
         "laravel-mix": "^5.0.1",
+        "less": "^3.11.1",
+        "less-loader": "^5.0.0",
         "lodash": "^4.17.13",
         "resolve-url-loader": "^3.1.0",
         "sass": "^1.15.2",
@@ -20,8 +22,10 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
-        "dev-ui": "file:../../../www/dev-ui",
+        "chart.js": "^2.9.3",
+        "dev-ui": "git://github.com/Eliepse/utils-ui-kit.git",
         "leaflet": "^1.6.0",
-        "pretty-ms": "^5.1.0"
+        "pretty-ms": "^5.1.0",
+        "tailwindcss": "^1.2.0"
     }
 }
