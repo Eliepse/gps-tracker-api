@@ -3,34 +3,64 @@
  * @var \App\App $app
  */
 ?>
-<html lang="fr">
+<html lang="fr" class="text-gray-900 antialiased leading-tight">
 <head>
 	<title>Statistiques de {{ $app->name }}</title>
-	<style>
-		html, body {
-			font-family: sans-serif;
-			font-size: 16px;
-		}
-	</style>
+	<link href="{{ mix("css/app.css") }}" rel="stylesheet">
 </head>
-<body>
-<h1>Statistiques de {{ $app->name }}</h1>
-<ul>
-	<li>{{ $totalTracks }} parcours</li>
-	<li>{{ number_format($totalDistance, 3, ',', ' ') }} km parcourus</li>
-</ul>
+<body class="min-h-screen bg-gray-100">
 
-<h2>Semaines passées</h2>
-<ul>
-	<li>[WIP]</li>
-</ul>
+<div class="container p-8 m-auto">
+	<h1 class="text-4xl text-center mb-12">Statistiques de <span class="text-indigo-500">{{ $app->name }}</span></h1>
+	<div class="flex flex-row mt-4 mb-4 text-center justify-center">
+		<div class="flex flex-col mx-4">
+			<span class="text-2xl mb-2">{{ $tracks->count() }}</span>
+			<span class="text-xs uppercase">trajets</span>
+		</div>
+		<div class="flex flex-col mx-4">
+			<span class="text-2xl mb-2">{{ number_format($tracksDistances->sum('distance'), 1, ',', ' ') }}<small> km</small></span>
+			<span class="text-xs uppercase">parcourus</span>
+		</div>
+	</div>
 
-<h2>Précédents parcours</h2>
-<ul>
-	@foreach($tracksDistances as $track)
-		<li>{{ $track["time"]->format("ymd") }} : {{ number_format($track["distance"], 3, ',', ' ') }}</li>
-	@endforeach
-</ul>
+	<h2 class="text-center text-2xl text-blue-500 mb-8 mt-12">Dernières semaines</h2>
+	<div class="flex flex-row mt-4 mb-4 text-center justify-center">
+		@foreach($weekly as $timestamp => $week)
+			<div class="flex flex-col mx-4">
+				<span class="text-2xl mb-2">{{ $week }} <small>km</small></span>
+				<span class="text-xs uppercase">{{ \Carbon\Carbon::createFromTimestamp($timestamp)->format("d M Y") }}</span>
+			</div>
+		@endforeach
+	</div>
+	<div>
+
+		<h2 class="text-center text-2xl text-blue-500 mb-8 mt-12">Derniers parcours</h2>
+		<table class="table-auto border-collapse w-full">
+			<thead>
+			<tr>
+				<th class="px-4 py-2">Date</th>
+				<th class="px-4 py-2">Distance</th>
+				<th class="px-4 py-2">Durée</th>
+			</tr>
+			</thead>
+			<tbody>
+			@foreach($tracksDistances->reverse()->take(15) as $track)
+				<tr>
+					<td class="border px-4 py-2">{{ $track["time"]->format("d M, H:i") }}</td>
+					<td class="border px-4 py-2">{{ number_format($track["distance"], 1, ',', ' ') }}
+						<small>km</small>
+					</td>
+					<td class="border px-4 py-2">
+						@if($track["duration"]->hours)
+							{{ $track["duration"]->hours }} h
+						@endif
+						{{ $track["duration"]->minutes }} min {{ $track["duration"]->seconds }} s
+					</td>
+				</tr>
+			@endforeach
+			</tbody>
+		</table>
+	</div>
 
 </body>
 </html>
