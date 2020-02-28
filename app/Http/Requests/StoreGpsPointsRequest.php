@@ -29,7 +29,7 @@ class StoreGpsPointsRequest extends FormRequest
 			'points' => 'required|array|min:1',
 			'points.*.longitude' => 'required|numeric|between:0,360',
 			'points.*.latitude' => 'required|numeric|between:0,360',
-			'points.*.altitude' => 'optional|nullable|numeric',
+			'points.*.altitude' => 'sometimes|nullable|numeric',
 			'points.*.accuracy' => 'required|numeric',
 			'points.*.time' => 'required|numeric',
 		];
