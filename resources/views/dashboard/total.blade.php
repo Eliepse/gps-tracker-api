@@ -5,8 +5,11 @@
 ?>
 <html lang="fr" class="text-gray-900 antialiased leading-tight">
 <head>
+	<meta charset="UTF-8">
 	<title>Statistiques de {{ $app->name }}</title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
 	<link href="{{ mix("css/app.css") }}" rel="stylesheet">
+	<link rel="stylesheet" href="{{ mix('/css/map.css') }}">
 </head>
 <body class="min-h-screen bg-gray-100">
 
@@ -61,6 +64,7 @@
 			</tbody>
 		</table>
 	</div>
+</div>
 
 </body>
 </html>
