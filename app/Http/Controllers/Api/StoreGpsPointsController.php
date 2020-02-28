@@ -16,6 +16,7 @@ class StoreGpsPointsController
 				return new GpsPoint([
 					'latitude' => $item['latitude'],
 					'longitude' => $item['longitude'],
+					'altitude' => $item['altitude'] ?? null,
 					'accuracy' => $item['accuracy'],
 					'time' => Carbon::createFromTimestamp(round($item['time'] / 1000)),
 				]);
