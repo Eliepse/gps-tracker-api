@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddAltitudeToGpsPointsTable extends Migration
+class ChangeRangeOfGpsFieldsToGpsPoints extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -14,9 +14,9 @@ class AddAltitudeToGpsPointsTable extends Migration
 	public function up()
 	{
 		Schema::table('gps_points', function (Blueprint $table) {
-			$table->float('altitude')
-				->after('latitude')
-				->nullable();
+			$table->float('longitude')->change();
+			$table->float('latitude')->change();
+			$table->float('accuracy')->change();
 		});
 	}
 
@@ -29,7 +29,9 @@ class AddAltitudeToGpsPointsTable extends Migration
 	public function down()
 	{
 		Schema::table('gps_points', function (Blueprint $table) {
-			$table->dropColumn("altitude");
+			$table->float('longitude', 8, 6)->change();
+			$table->float('latitude', 8, 6)->change();
+			$table->float('accuracy', 8, 2)->change();
 		});
 	}
 }

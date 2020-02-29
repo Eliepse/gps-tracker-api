@@ -45,4 +45,28 @@ class GpsPoint extends Model
 
 		return $eQuatorialEarthRadius * $c;
 	}
+
+
+	public function setLongitudeAttribute($val)
+	{
+		$this->attributes["longitude"] = round($val, 6);
+	}
+
+
+	public function setLatitudeAttribute($val)
+	{
+		$this->attributes["latitude"] = round($val, 6);
+	}
+
+
+	public function setAltitudeAttribute($val)
+	{
+		$this->attributes["altitude"] = round($val, 6);
+	}
+
+
+	public function setAccuracyAttribute($val)
+	{
+		$this->attributes["accuracy"] = round($val, 2);
+	}
 }
