@@ -14,7 +14,7 @@ class AddAltitudeToGpsPointsTable extends Migration
 	public function up()
 	{
 		Schema::table('gps_points', function (Blueprint $table) {
-			$table->float('altitude')
+			$table->double('altitude')
 				->after('latitude')
 				->nullable();
 		});

@@ -14,9 +14,9 @@ class ChangeRangeOfGpsFieldsToGpsPoints extends Migration
 	public function up()
 	{
 		Schema::table('gps_points', function (Blueprint $table) {
-			$table->float('longitude')->change();
-			$table->float('latitude')->change();
-			$table->float('accuracy')->change();
+			$table->double('longitude')->change();
+			$table->double('latitude')->change();
+			$table->double('accuracy')->change();
 		});
 	}
 
