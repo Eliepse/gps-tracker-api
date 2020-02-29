@@ -16,9 +16,10 @@ class CreateGpsPointsTable extends Migration
 		Schema::create('gps_points', function (Blueprint $table) {
 			$table->bigIncrements('id');
 			$table->unsignedBigInteger('gps_track_id');
-			$table->float('longitude', 8, 6);
-			$table->float('latitude', 8, 6);
-			$table->float('accuracy');
+			$table->float('longitude', 12, 8);
+			$table->float('latitude', 12, 8);
+			$table->float('altitude', 12, 8)->default(0);
+			$table->float('accuracy', 6, 2);
 			$table->timestamp('time');
 
 			$table->foreign('gps_track_id')

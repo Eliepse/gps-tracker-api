@@ -49,19 +49,19 @@ class GpsPoint extends Model
 
 	public function setLongitudeAttribute($val)
 	{
-		$this->attributes["longitude"] = round($val, 6);
+		$this->attributes["longitude"] = round($val, 8);
 	}
 
 
 	public function setLatitudeAttribute($val)
 	{
-		$this->attributes["latitude"] = round($val, 6);
+		$this->attributes["latitude"] = round($val, 8);
 	}
 
 
 	public function setAltitudeAttribute($val)
 	{
-		$this->attributes["altitude"] = round($val, 6);
+		$this->attributes["altitude"] = round($val, 8);
 	}
 
 
