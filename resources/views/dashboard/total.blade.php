@@ -26,7 +26,15 @@
 		</div>
 	</div>
 
-	<h2 class="text-center text-2xl text-blue-500 mb-8 mt-12">Dernières semaines</h2>
+	<div class="text-center mt-10 mb-8">
+		<button class="bg-gray-300 hover:bg-gray-500 text-teal-900 font-bold py-2 px-4 rounded">
+			<a href="{{ action(\App\Http\Controllers\Dashboard\MapController::class, [$app]) }}">
+				Carte
+			</a>
+		</button>
+	</div>
+
+	<h2 class="text-center text-2xl text-blue-500 mb-8 mt-8">Dernières semaines</h2>
 	<div class="flex flex-row mt-4 mb-4 text-center justify-center">
 		@foreach($weekly as $timestamp => $week)
 			<div class="flex flex-col mx-4">
