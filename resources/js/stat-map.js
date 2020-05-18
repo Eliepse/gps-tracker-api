@@ -22,13 +22,25 @@ Leaflet
  * @var array data
  * */
 
+const dataLength = data.length;
+
+function getColor(index) {
+	switch(index) {
+		case dataLength - 4: return "#495057";
+		case dataLength - 3: return "#343a40";
+		case dataLength - 2: return "#212529";
+		case dataLength - 1: return "#fcc419";
+		default: return "#868e96";
+	}
+}
+
 let count = 0;
 
-data.forEach(function (track) {
+data.forEach(function (track, i) {
 	let line = Leaflet.polyline([], {
-		opacity: .5,
-		weight: 3,
-		color: "#8e7b2f",
+		opacity: .75,
+		weight: 2,
+		color: getColor(i),
 	});
 	line.setLatLngs(
 		track.points.reduce((acc, point) => {
