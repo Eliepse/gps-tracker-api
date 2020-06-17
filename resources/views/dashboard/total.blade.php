@@ -57,7 +57,11 @@
 			<tbody>
 			@foreach($tracksDistances->reverse()->take(15) as $track)
 				<tr>
-					<td class="border px-4 py-2">{{ $track["time"]->format("d M, H:i") }}</td>
+					<td class="border px-4 py-2">
+						<a href="{{ route("map", ["userApp" => $app, "track" => $track['id']]) }}">
+						{{ $track["time"]->format("d M, H:i") }}
+						</a>
+					</td>
 					<td class="border px-4 py-2">{{ number_format($track["distance"], 1, ',', ' ') }}
 						<small>km</small>
 					</td>

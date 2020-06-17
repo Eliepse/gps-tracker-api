@@ -31,6 +31,7 @@ class DashboardController
 				}
 
 				return [
+					"id" => $track->id,
 					"distance" => $distance,
 					"duration" => $duration,
 					"time" => $track->created_at,

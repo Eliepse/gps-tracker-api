@@ -16,4 +16,4 @@ use App\Http\Controllers\Dashboard\MapController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/app/{app}', [DashboardController::class, 'home']);
-Route::get('/app/{userApp}/map/{track?}', MapController::class);
+Route::get('/app/{userApp}/map/{track?}', MapController::class)->name('map');
