@@ -5,16 +5,17 @@ namespace App\Http\Controllers\Dashboard;
 
 
 use App\App;
+use App\GpsTrack;
 
 class MapController
 {
-	public function __invoke(App $app)
+	public function __invoke(App $userApp, GpsTrack $track = null)
 	{
-		$app->load("tracks.points");
+		$userApp->load("tracks.points");
 
 		return view("dashboard.map", [
-			"app" => $app,
-			"data" => $app->tracks
+			"app" => $userApp,
+			"data" => $userApp->tracks
 		]);
 	}
 }
