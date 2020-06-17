@@ -6,16 +6,24 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\App;
 use App\GpsTrack;
+use Illuminate\Support\Collection;
 
 class MapController
 {
 	public function __invoke(App $userApp, GpsTrack $track = null)
 	{
-		$userApp->load("tracks.points");
+		if ($track) {
+			$userApp->tracks()->findOrFail($track->id);
+			$track->load("points:id,gps_track_id,longitude,latitude");
+			$tracks = Collection::wrap($track);
+		} else {
+			$userApp->load("tracks.points:id,gps_track_id,longitude,latitude");
+			$tracks = $userApp->tracks;
+		}
 
 		return view("dashboard.map", [
 			"app" => $userApp,
-			"data" => $userApp->tracks
+			"data" => $tracks,
 		]);
 	}
 }
