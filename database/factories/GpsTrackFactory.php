@@ -37,6 +37,5 @@ $factory->define(GpsTrack::class, function (Faker $faker) {
 		'app_id' => function () {
 			return \factory(App::class);
 		},
-		'nodes' => [],
 	];
 });

@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @package App
  * @property-read int $id
  * @property int app_id
- * @property array $nodes
  * @property-read Carbon $created_at
  * @property-read Carbon $updated_at
  * @property-read App $app
@@ -24,11 +23,8 @@ class GpsTrack extends Model
 {
 	protected $table = "gps_tracks";
 
-	protected $fillable = ['nodes', 'app_id'];
+	protected $fillable = ['app_id'];
 
-	protected $casts = [
-		'nodes' => 'json',
-	];
 
 
 	public function app(): BelongsTo
