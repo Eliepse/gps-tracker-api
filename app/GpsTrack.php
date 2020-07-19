@@ -3,6 +3,7 @@
 namespace App;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,6 +26,7 @@ class GpsTrack extends Model
 
 	protected $fillable = ['app_id'];
 
+	private $distance = null;
 
 
 	public function app(): BelongsTo
@@ -36,5 +38,33 @@ class GpsTrack extends Model
 	public function points(): HasMany
 	{
 		return $this->hasMany(GpsPoint::class, "gps_track_id", "id");
+	}
+
+
+	public function getDistance(bool $force = false): float
+	{
+		if (! is_null($this->distance) && ! $force) {
+			return $this->distance;
+		}
+
+		if ($this->points->count() < 2) {
+			return 0.0;
+		}
+
+		$this->distance = 0.0;
+		for ($h = 0, $i = 1; $i < $this->points->count(); $i++, $h++) {
+			$this->distance += $this->points[ $i ]->distanceTo($this->points[ $h ]);
+		}
+		return $this->distance;
+	}
+
+
+	public function getDuration(): CarbonInterval
+	{
+		if ($this->points->count() < 2) {
+			return CarbonInterval::create(0);
+		}
+
+		return $this->points->last()->time->diffAsCarbonInterval($this->points->first()->time);
 	}
 }

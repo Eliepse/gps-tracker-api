@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Dashboard;
 use App\App;
 use App\GpsTrack;
 use Carbon\Carbon;
-use Carbon\CarbonInterval;
 
 class DashboardController
 {
@@ -17,23 +16,10 @@ class DashboardController
 
 		$tracksDistances = $app->tracks
 			->map(function (GpsTrack $track) {
-				$distance = 0.0;
-				$duration = CarbonInterval::create(0);
-
-				for ($h = 0, $i = 1; $i < $track->points->count(); $i++, $h++) {
-					$distance += $track->points[ $i ]->distanceTo($track->points[ $h ]);
-				}
-
-				if ($distance > 0) {
-					/** @var Carbon $last */
-					$last = $track->points->last()->time;
-					$duration = $last->diffAsCarbonInterval($track->points->first()->time);
-				}
-
 				return [
 					"id" => $track->id,
-					"distance" => $distance,
-					"duration" => $duration,
+					"distance" => $track->getDistance(),
+					"duration" => $track->getDuration(),
 					"time" => $track->created_at,
 				];
 			});

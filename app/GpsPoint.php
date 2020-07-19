@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float $longitude
  * @property float $latitude
  * @property float $accuracy
+ * @property float $altitude
  * @property Carbon $time
  */
 class GpsPoint extends Model
