@@ -1,8 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\RequestNewGpsTrackController;
+use App\Http\Controllers\Api\GpsTrackResourceController;
 use App\Http\Controllers\Api\StoreGpsPointsController;
-use App\Http\Controllers\GpsTrackController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,10 +20,5 @@ use Illuminate\Support\Facades\Route;
 //		return $request->user();
 //	});
 
-//Route::middleware('auth:api')
-//	->resource('tracks', GpsTrackController::class, [
-//		'only' => ['store', 'show', 'index'],
-//	]);
-
 Route::middleware('auth:api')->post('track/{track}/points', StoreGpsPointsController::class);
-Route::middleware('auth:api')->post('track', RequestNewGpsTrackController::class);
+Route::middleware('auth:api')->post("track", GpsTrackResourceController::class . "@store");
