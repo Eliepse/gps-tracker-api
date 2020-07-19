@@ -14,7 +14,7 @@ class RemoveNodesFieldFromGpsTracks extends Migration
 	public function up()
 	{
 		Schema::table('gps_tracks', function (Blueprint $table) {
-			$table->removeColumn("nodes");
+			$table->dropColumn("nodes");
 		});
 	}
 
