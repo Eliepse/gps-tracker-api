@@ -17,7 +17,7 @@ use Illuminate\Notifications\Notifiable;
  * @property string $uuid
  * @property string $password
  * @property string $api_token
- * @property-read Collection $tracks
+ * @property-read Collection|GpsTrack[] $tracks
  */
 class App extends Authenticatable
 {

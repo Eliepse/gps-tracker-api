@@ -18,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Carbon $created_at
  * @property-read Carbon $updated_at
  * @property-read App $app
- * @property-read Collection $points
+ * @property-read Collection|GpsPoint[] $points
  */
 class GpsTrack extends Model
 {
@@ -41,6 +41,13 @@ class GpsTrack extends Model
 	}
 
 
+	/**
+	 * Calculates the total distance of the track.
+	 *
+	 * @param bool $force
+	 *
+	 * @return float Returns the total distance in meters
+	 */
 	public function getDistance(bool $force = false): float
 	{
 		if (! is_null($this->distance) && ! $force) {
@@ -59,6 +66,12 @@ class GpsTrack extends Model
 	}
 
 
+	/**
+	 * Calculates the total duration of the track.
+	 *
+	 * @return CarbonInterval The duration as an interval
+	 * @throws \Exception
+	 */
 	public function getDuration(): CarbonInterval
 	{
 		if ($this->points->count() < 2) {

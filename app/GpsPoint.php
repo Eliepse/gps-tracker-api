@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float $accuracy
  * @property float $altitude
  * @property Carbon $time
+ * @property-read GpsTrack $track
  */
 class GpsPoint extends Model
 {
