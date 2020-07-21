@@ -35,9 +35,16 @@ class GpsPoint extends Model
 	}
 
 
+	/**
+	 * Calculates the distance, in meters, between the actual point and the given point
+	 *
+	 * @param GpsPoint $point The point to calculate the distance to
+	 *
+	 * @return float The distance in meters
+	 */
 	public function distanceTo(GpsPoint $point): float
 	{
-		$eQuatorialEarthRadius = 6378.1370;
+		$eQuatorialEarthRadius = 6378137.0;
 		$d2r = pi() / 180;
 		$dlong = ($point->longitude - $this->longitude) * $d2r;
 		$dlat = ($point->latitude - $this->latitude) * $d2r;

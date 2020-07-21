@@ -18,7 +18,7 @@ class DashboardController
 			->map(function (GpsTrack $track) {
 				return [
 					"id" => $track->id,
-					"distance" => $track->getDistance(),
+					"distance" => $track->getDistance() / 1_000,
 					"duration" => $track->getDuration(),
 					"time" => $track->created_at,
 				];
