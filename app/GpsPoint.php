@@ -48,25 +48,45 @@ class GpsPoint extends Model
 	}
 
 
-	public function setLongitudeAttribute($val)
+	/**
+	 * @param float $val A longitude from -180° to 180°
+	 *
+	 * @noinspection PhpUnused
+	 */
+	public function setLongitudeAttribute(float $val)
 	{
 		$this->attributes["longitude"] = round($val, 8);
 	}
 
 
-	public function setLatitudeAttribute($val)
+	/**
+	 * @param float $val A latitude from -90° to 90°
+	 *
+	 * @noinspection PhpUnused
+	 */
+	public function setLatitudeAttribute(float $val)
 	{
 		$this->attributes["latitude"] = round($val, 8);
 	}
 
 
-	public function setAltitudeAttribute($val)
+	/**
+	 * @param float|null $val
+	 *
+	 * @noinspection PhpUnused
+	 */
+	public function setAltitudeAttribute(?float $val)
 	{
 		$this->attributes["altitude"] = round($val, 8);
 	}
 
 
-	public function setAccuracyAttribute($val)
+	/**
+	 * @param float $val
+	 *
+	 * @noinspection PhpUnused
+	 */
+	public function setAccuracyAttribute(float $val)
 	{
 		$this->attributes["accuracy"] = round($val, 2);
 	}

@@ -19,8 +19,8 @@ class StoreGpsPointsControllerTest extends TestCase
 			->make()
 			->map(function (GpsPoint $point) {
 				return [
-					"longitude" => abs($point->longitude),
-					"latitude" => abs($point->latitude),
+					"longitude" => $point->longitude,
+					"latitude" => $point->latitude,
 					"accuracy" => $point->accuracy,
 					"altitude" => $point->altitude,
 					"time" => $point->time->timestamp * 1_000,
