@@ -25,3 +25,4 @@ Route::middleware('auth:api')->post("track", GpsTrackResourceController::class .
 Route::middleware('auth:api')->get("tracks", GpsTrackResourceController::class . "@index");
 
 Route::get("apps/{app}/tracks", GpsTrackResourceController::class . "@index");
+Route::get("tracks/{track}", GpsTrackResourceController::class . "@show");

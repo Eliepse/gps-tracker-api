@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\App;
+use App\GpsTrack;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +21,16 @@ final class GpsTrackResourceController
 			->get();
 
 		return response()->json($tracks);
+	}
+
+
+	public function show(int $track)
+	{
+		return response()->json(
+			GpsTrack::query()->select(["id"])
+				->findOrFail($track)
+				->load("points:id,gps_track_id,longitude,latitude")
+		);
 	}
 
 

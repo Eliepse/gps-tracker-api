@@ -54,4 +54,16 @@ class GpsTrackResourceControllerTest extends TestCase
 			->assertOk()
 			->assertJsonStructure([["id", "app_id", "points" => [["id", "gps_track_id", "longitude", "latitude"]]]]);
 	}
+
+
+	/** @test */
+	public function it_returns_json_of_single_track()
+	{
+		/** @var GpsTrack $track */
+		$track = factory(GpsTrack::class)->create();
+		factory(GpsPoint::class, 2)->create(["gps_track_id" => $track]);
+		$this->getJson(action([GpsTrackResourceController::class, "show"], [$track]))
+			->assertOk()
+			->assertJsonStructure(["id", "points" => [["id", "gps_track_id", "longitude", "latitude"]]]);
+	}
 }
