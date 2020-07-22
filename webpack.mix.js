@@ -14,7 +14,6 @@ const tailwindcss = require('tailwindcss');
 
 mix.disableNotifications()
 	.js('resources/js/app.js', 'public/js')
-	.js('resources/js/stat-map.js', 'public/js')
 	.sass('resources/sass/map.scss', 'public/css')
 	.less('resources/less/app.less', 'public/css')
 	.options({
