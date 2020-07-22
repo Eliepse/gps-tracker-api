@@ -24,8 +24,10 @@
     "dependencies": {
         "chart.js": "^2.9.3",
         "dev-ui": "git://github.com/Eliepse/utils-ui-kit.git",
+        "laravel-echo": "^1.8.0",
         "leaflet": "^1.6.0",
         "pretty-ms": "^5.1.0",
+        "socket.io-client": "^2.3.0",
         "tailwindcss": "^1.2.0",
         "vue": "^2.6.11"
     }
