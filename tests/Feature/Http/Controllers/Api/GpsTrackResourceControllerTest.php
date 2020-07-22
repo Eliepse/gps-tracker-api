@@ -24,7 +24,7 @@ class GpsTrackResourceControllerTest extends TestCase
 
 
 	/** @test */
-	public function it_return_json_of_tracks()
+	public function it_returns_json_of_tracks_with_auth()
 	{
 		$app = factory(App::class)->create();
 		factory(GpsTrack::class, 2)
@@ -34,8 +34,24 @@ class GpsTrackResourceControllerTest extends TestCase
 			});
 
 		$this->withHeader("Authorization", "Bearer " . $app->api_token)
-			->getJson(action([GpsTrackResourceController::class, "index"]))
+			->getJson("api/tracks")
 			->assertOk()
-			->assertJsonStructure([["id", "app_id", "points" => [["id", "gps_track_id", "longitude", "latitude"]],]]);
+			->assertJsonStructure([["id", "app_id", "points" => [["id", "gps_track_id", "longitude", "latitude"]]]]);
+	}
+
+
+	/** @test */
+	public function it_returns_json_of_tracks_without_auth()
+	{
+		$app = factory(App::class)->create();
+		factory(GpsTrack::class, 2)
+			->create(["app_id" => $app->id])
+			->each(function (GpsTrack $track) {
+				factory(GpsPoint::class, 5)->create(["gps_track_id" => $track->id]);
+			});
+
+		$this->getJson(action([GpsTrackResourceController::class, "index"], [$app]))
+			->assertOk()
+			->assertJsonStructure([["id", "app_id", "points" => [["id", "gps_track_id", "longitude", "latitude"]]]]);
 	}
 }
