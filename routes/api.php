@@ -22,3 +22,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->post('track/{track}/points', StoreGpsPointsController::class);
 Route::middleware('auth:api')->post("track", GpsTrackResourceController::class . "@store");
+Route::middleware('auth:api')->get("tracks", GpsTrackResourceController::class . "@index");
