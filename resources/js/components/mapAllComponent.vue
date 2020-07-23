@@ -36,10 +36,17 @@
 			if (this.track_id) {
 				this.$store.dispatch("loadTrack", this.track_id)
 					.then(() => {
-						//
+						this.drawTracks(Object.values(this.$store.state.tracks))
+						//echo.channel(`App.Track.${this.track_id}`)
+						//	.listen("LocationsStoredEvent", (locations) => {
+						//		console.debug(locations);
+						//	})
 					})
 			} else {
-				this.$store.dispatch("loadUserTracks", this.user_id);
+				this.$store.dispatch("loadUserTracks", this.user_id)
+					.then(() => {
+						this.drawTracks(Object.values(this.$store.state.tracks))
+					})
 			}
 		},
 		methods: {
@@ -52,8 +59,8 @@
 						color: "#333333",
 					});
 					line.setLatLngs(
-						track.points.reduce((acc, point) => {
-							acc.push([point.latitude, point.longitude]);
+						track.locations.reduce((acc, location) => {
+							acc.push([location.latitude, location.longitude]);
 							pCount++;
 							return acc;
 						}, [])
