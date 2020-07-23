@@ -21,22 +21,20 @@ export default new Vuex.Store({
 	},
 	actions: {
 		loadTrack: async function (ctx, id) {
-			axios.get(`/api/tracks/${id}`)
-				.then((r) => {
-					ctx.commit("addTracks", [r.data])
-				})
-				.catch((r) => {
-					console.error(r)
-				});
+			try {
+				const response = await axios.get(`/api/tracks/${id}`);
+				await ctx.commit("addTracks", [response.data]);
+			} catch (err) {
+				console.error(err);
+			}
 		},
 		loadUserTracks: async function (ctx, user_id) {
-			axios.get(`/api/apps/${user_id}/tracks`)
-				.then((r) => {
-					ctx.commit("addTracks", r.data)
-				})
-				.catch((r) => {
-					console.error(r)
-				});
+			try {
+				const response = await axios.get(`/api/apps/${user_id}/tracks`);
+				await ctx.commit("addTracks", response.data);
+			} catch (err) {
+				console.error(err);
+			}
 		}
 	}
 });
