@@ -15,7 +15,7 @@
 <body class="min-h-screen bg-gray-100">
 
 <div id="app">
-	<map-all :app_id="{{ $app->id }}" @if($track) :track_id="{{ $track->id }}" @endif ></map-all>
+	<map-all :user_id="{{ $app->id }}" @if($track) :track_id="{{ $track->id }}" @endif ></map-all>
 </div>
 
 <script src="{{ mix("js/app.js") }}"></script>

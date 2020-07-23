@@ -7,7 +7,7 @@
 
 	export default {
 		props: {
-			app_id: {
+			user_id: {
 				type: Number,
 				required: true
 			},
@@ -34,21 +34,12 @@
 			}).addTo(this.map);
 
 			if (this.track_id) {
-				axios.get(`/api/tracks/${this.track_id}`)
-					.then((r) => {
-						this.drawTracks([r.data])
-					})
-					.catch((r) => {
-						console.error(r)
+				this.$store.dispatch("loadTrack", this.track_id)
+					.then(() => {
+						//
 					})
 			} else {
-				axios.get(`/api/apps/${this.app_id}/tracks`)
-					.then((r) => {
-						this.drawTracks(r.data)
-					})
-					.catch((r) => {
-						console.error(r)
-					})
+				this.$store.dispatch("loadUserTracks", this.user_id);
 			}
 		},
 		methods: {
