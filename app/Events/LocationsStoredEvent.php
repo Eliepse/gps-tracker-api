@@ -3,9 +3,9 @@
 namespace App\Events;
 
 use App\Location;
+use App\Track;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -15,23 +15,39 @@ class LocationsStoredEvent implements ShouldBroadcast
 	use Dispatchable, InteractsWithSockets, SerializesModels;
 
 	/**
-	 * Create a new event instance.
-	 *
-	 * @return void
+	 * @var Track
 	 */
-	public function __construct(Location $point)
+	private Track $track;
+
+	/**
+	 * @var Location[]|array
+	 */
+	private array $points;
+
+
+	/**
+	 * @param Track $track
+	 * @param array|Location[] $points
+	 */
+	public function __construct(Track $track, array $points)
 	{
-		//
+		$this->track = $track;
+		$this->points = $points;
 	}
 
 
 	/**
-	 * Get the channels the event should broadcast on.
-	 *
-	 * @return \Illuminate\Broadcasting\Channel|array
+	 * @return Channel
 	 */
 	public function broadcastOn()
 	{
-		return new PrivateChannel('channel-name');
+		return new Channel('App.Track.' . $this->track->id);
+	}
+
+
+	/** @noinspection PhpUnused */
+	public function broadcastWith(): array
+	{
+		return $this->points;
 	}
 }

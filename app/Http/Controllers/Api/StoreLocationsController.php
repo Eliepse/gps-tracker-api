@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Events\LocationsStoredEvent;
 use App\Location;
 use App\Track;
 use App\Http\Requests\StoreLocationsRequest;
@@ -23,6 +24,8 @@ class StoreLocationsController
 			});
 
 		$track->locations()->saveMany($locations);
+
+		event(new LocationsStoredEvent($track, $locations->toArray()));
 
 		return response()->json(['status' => 'ok']);
 	}
