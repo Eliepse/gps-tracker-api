@@ -48,6 +48,8 @@ class LocationsStoredEvent implements ShouldBroadcast
 	/** @noinspection PhpUnused */
 	public function broadcastWith(): array
 	{
-		return $this->points;
+		return [
+			"locations" => $this->points,
+		];
 	}
 }
