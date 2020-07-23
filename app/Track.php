@@ -14,15 +14,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @package App
  * @property-read int $id
- * @property int app_id
+ * @property int $user_id
  * @property-read Carbon $created_at
  * @property-read Carbon $updated_at
- * @property-read App $app
- * @property-read Collection|GpsPoint[] $points
+ * @property-read User $user
+ * @property-read Collection|Location[] $locations
  */
-class GpsTrack extends Model
+class Track extends Model
 {
-	protected $table = "gps_tracks";
+	protected $table = "tracks";
 
 	protected $fillable = ['app_id'];
 
@@ -30,15 +30,15 @@ class GpsTrack extends Model
 	private $durationWithoutPause = null;
 
 
-	public function app(): BelongsTo
+	public function user(): BelongsTo
 	{
-		return $this->belongsTo(App::class, 'app_id', 'id');
+		return $this->belongsTo(User::class, 'user_id', 'id');
 	}
 
 
-	public function points(): HasMany
+	public function locations(): HasMany
 	{
-		return $this->hasMany(GpsPoint::class, "gps_track_id", "id");
+		return $this->hasMany(Location::class, "track_id", "id");
 	}
 
 
@@ -56,13 +56,13 @@ class GpsTrack extends Model
 			return $this->distance;
 		}
 
-		if ($this->points->count() < 2) {
+		if ($this->locations->count() < 2) {
 			return 0.0;
 		}
 
 		$this->distance = 0.0;
-		for ($h = 0, $i = 1; $i < $this->points->count(); $i++, $h++) {
-			$this->distance += $this->points[ $i ]->distanceTo($this->points[ $h ]);
+		for ($h = 0, $i = 1; $i < $this->locations->count(); $i++, $h++) {
+			$this->distance += $this->locations[ $i ]->distanceTo($this->locations[ $h ]);
 		}
 		return $this->distance;
 	}
@@ -76,11 +76,11 @@ class GpsTrack extends Model
 	 */
 	public function getDuration(): CarbonInterval
 	{
-		if ($this->points->count() < 2) {
+		if ($this->locations->count() < 2) {
 			return CarbonInterval::create(0);
 		}
 
-		return $this->points->last()->time->diffAsCarbonInterval($this->points->first()->time);
+		return $this->locations->last()->time->diffAsCarbonInterval($this->locations->first()->time);
 	}
 
 
@@ -99,14 +99,14 @@ class GpsTrack extends Model
 			return $this->durationWithoutPause;
 		}
 
-		if ($this->points->count() < 2) {
+		if ($this->locations->count() < 2) {
 			return CarbonInterval::create(0);
 		}
 
 		$interval = CarbonInterval::create(0);
-		for ($h = 0, $i = 1; $i < $this->points->count(); $i++, $h++) {
-			$distance = $this->points[ $i ]->distanceTo($this->points[ $h ]);
-			$duration = $this->points[ $h ]->time->diffAsCarbonInterval($this->points[ $i ]->time);
+		for ($h = 0, $i = 1; $i < $this->locations->count(); $i++, $h++) {
+			$distance = $this->locations[ $i ]->distanceTo($this->locations[ $h ]);
+			$duration = $this->locations[ $h ]->time->diffAsCarbonInterval($this->locations[ $i ]->time);
 			if ($distance / $duration->totalSeconds >= config("general.calculations.idle_speed_thershold")) {
 				$interval->add($duration);
 			}

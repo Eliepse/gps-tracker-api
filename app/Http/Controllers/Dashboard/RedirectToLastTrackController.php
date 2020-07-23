@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\GpsTrack;
+use App\Track;
 use Illuminate\Http\RedirectResponse;
 
 final class RedirectToLastTrackController
 {
 	public function __invoke(): RedirectResponse
 	{
-		/** @var GpsTrack $track */
-		$track = GpsTrack::query()
+		/** @var Track $track */
+		$track = Track::query()
 			->orderBy("id", "DESC")
-			->firstOrFail(["id", "app_id"]);
+			->firstOrFail(["id", "user_id"]);
 
-		return redirect()->route("map", [$track->app_id, $track->id]);
+		return redirect()->route("map", [$track->user_id, $track->id]);
 	}
 }

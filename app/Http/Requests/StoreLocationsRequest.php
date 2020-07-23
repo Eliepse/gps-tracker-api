@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\App;
+use App\User;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreGpsPointsRequest extends FormRequest
+class StoreLocationsRequest extends FormRequest
 {
 	/**
 	 * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class StoreGpsPointsRequest extends FormRequest
 	 */
 	public function authorize()
 	{
-		return is_a($this->user(), App::class);
+		return is_a($this->user(), User::class);
 	}
 
 

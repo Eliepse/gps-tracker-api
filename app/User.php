@@ -17,11 +17,11 @@ use Illuminate\Notifications\Notifiable;
  * @property string $uuid
  * @property string $password
  * @property string $api_token
- * @property-read Collection|GpsTrack[] $tracks
+ * @property-read Collection|Track[] $tracks
  */
-class App extends Authenticatable
+class User extends Authenticatable
 {
-	protected $table = 'apps';
+	protected $table = 'users';
 
 	/**
 	 * The attributes that are mass assignable.
@@ -44,6 +44,6 @@ class App extends Authenticatable
 
 	public function tracks(): HasMany
 	{
-		return $this->hasMany(GpsTrack::class, 'app_id', 'id');
+		return $this->hasMany(Track::class, 'user_id', 'id');
 	}
 }

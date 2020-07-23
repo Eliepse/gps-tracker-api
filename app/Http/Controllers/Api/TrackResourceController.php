@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\App;
-use App\GpsTrack;
+use App\User;
+use App\Track;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-final class GpsTrackResourceController
+final class TrackResourceController
 {
-	public function index(Request $request, App $app = null): JsonResponse
+	public function index(Request $request, User $user = null): JsonResponse
 	{
-		$app = $app ?: $request->user();
+		$user = $user ?: $request->user();
 
 		// TODO: use Laravel's Resources
-		$tracks = $app->tracks()
-			->select(["id", "app_id"])
-			->with(["points:id,gps_track_id,longitude,latitude"])
+		$tracks = $user->tracks()
+			->select(["id", "user_id"])
+			->with(["locations:id,track_id,longitude,latitude"])
 			->get();
 
 		return response()->json($tracks);
@@ -27,9 +27,9 @@ final class GpsTrackResourceController
 	public function show(int $track)
 	{
 		return response()->json(
-			GpsTrack::query()->select(["id"])
+			Track::query()->select(["id"])
 				->findOrFail($track)
-				->load("points:id,gps_track_id,longitude,latitude")
+				->load("locations:id,track_id,longitude,latitude")
 		);
 	}
 

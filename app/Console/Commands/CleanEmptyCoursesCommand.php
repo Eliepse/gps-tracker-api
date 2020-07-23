@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\GpsTrack;
+use App\Track;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -42,14 +42,14 @@ class CleanEmptyCoursesCommand extends Command
 	public function handle()
 	{
 		/** @var Collection $tracks */
-		$tracks = GpsTrack::select(['id'])
-			->withCount("points")
+		$tracks = Track::select(['id'])
+			->withCount("locations")
 			->get()
-			->filter(function ($track) { return $track->points_count < 2; });
+			->filter(function ($track) { return $track->locations_count < 2; });
 
 		$count = $tracks->count();
 
-		$tracks->each(function (GpsTrack $track) {
+		$tracks->each(function (Track $track) {
 			$track->delete();
 		});
 

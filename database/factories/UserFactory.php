@@ -2,7 +2,7 @@
 
 /** @var Factory $factory */
 
-use App\App;
+use App\User;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Str;
@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
 |
 */
 
-$factory->define(App::class, function (Faker $faker) {
+$factory->define(User::class, function (Faker $faker) {
 	return [
 		'uuid' => $faker->uuid,
 		'name' => $faker->word,

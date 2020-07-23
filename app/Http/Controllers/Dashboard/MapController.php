@@ -4,13 +4,13 @@
 namespace App\Http\Controllers\Dashboard;
 
 
-use App\App;
-use App\GpsTrack;
+use App\User;
+use App\Track;
 use Illuminate\Support\Collection;
 
 class MapController
 {
-	public function __invoke(App $userApp, GpsTrack $track = null)
+	public function __invoke(User $userApp, Track $track = null)
 	{
 //		if ($track) {
 //			$userApp->tracks()->findOrFail($track->id);

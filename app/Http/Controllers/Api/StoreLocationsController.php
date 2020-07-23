@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\GpsPoint;
-use App\GpsTrack;
-use App\Http\Requests\StoreGpsPointsRequest;
+use App\Location;
+use App\Track;
+use App\Http\Requests\StoreLocationsRequest;
 use Carbon\Carbon;
 
-class StoreGpsPointsController
+class StoreLocationsController
 {
-	public function __invoke(StoreGpsPointsRequest $request, GpsTrack $track)
+	public function __invoke(StoreLocationsRequest $request, Track $track)
 	{
-		$points = collect($request->get("points"))
+		$locations = collect($request->get("points"))
 			->transform(function (array $item) {
-				return new GpsPoint([
+				return new Location([
 					'latitude' => $item['latitude'],
 					'longitude' => $item['longitude'],
 					'altitude' => $item['altitude'] ?? null,
@@ -22,7 +22,7 @@ class StoreGpsPointsController
 				]);
 			});
 
-		$track->points()->saveMany($points);
+		$track->locations()->saveMany($locations);
 
 		return response()->json(['status' => 'ok']);
 	}

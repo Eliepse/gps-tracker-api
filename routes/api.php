@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\GpsTrackResourceController;
-use App\Http\Controllers\Api\StoreGpsPointsController;
+use App\Http\Controllers\Api\TrackResourceController;
+use App\Http\Controllers\Api\StoreLocationsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,9 +20,9 @@ use Illuminate\Support\Facades\Route;
 //		return $request->user();
 //	});
 
-Route::middleware('auth:api')->post('track/{track}/points', StoreGpsPointsController::class);
-Route::middleware('auth:api')->post("track", GpsTrackResourceController::class . "@store");
-Route::middleware('auth:api')->get("tracks", GpsTrackResourceController::class . "@index");
+Route::middleware('auth:api')->post('track/{track}/points', StoreLocationsController::class);
+Route::middleware('auth:api')->post("track", TrackResourceController::class . "@store");
+Route::middleware('auth:api')->get("tracks", TrackResourceController::class . "@index");
 
-Route::get("apps/{app}/tracks", GpsTrackResourceController::class . "@index");
-Route::get("tracks/{track}", GpsTrackResourceController::class . "@show");
+Route::get("apps/{user}/tracks", TrackResourceController::class . "@index");
+Route::get("tracks/{track}", TrackResourceController::class . "@show");

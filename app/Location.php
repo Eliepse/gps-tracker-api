@@ -15,11 +15,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float $accuracy
  * @property float $altitude
  * @property Carbon $time
- * @property-read GpsTrack $track
+ * @property-read Track $track
  */
-class GpsPoint extends Model
+class Location extends Model
 {
-	protected $table = "gps_points";
+	protected $table = "locations";
 
 	protected $guarded = [];
 
@@ -32,18 +32,18 @@ class GpsPoint extends Model
 
 	public function track(): BelongsTo
 	{
-		return $this->belongsTo(GpsTrack::class, "gps_track_id", "id");
+		return $this->belongsTo(Track::class, "track_id", "id");
 	}
 
 
 	/**
 	 * Calculates the distance, in meters, between the actual point and the given point
 	 *
-	 * @param GpsPoint $point The point to calculate the distance to
+	 * @param Location $point The point to calculate the distance to
 	 *
 	 * @return float The distance in meters
 	 */
-	public function distanceTo(GpsPoint $point): float
+	public function distanceTo(Location $point): float
 	{
 		$eQuatorialEarthRadius = 6378137.0;
 		$d2r = pi() / 180;

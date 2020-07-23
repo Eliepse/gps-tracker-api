@@ -4,18 +4,18 @@
 namespace App\Http\Controllers\Dashboard;
 
 
-use App\App;
-use App\GpsTrack;
+use App\User;
+use App\Track;
 use Carbon\Carbon;
 
 class DashboardController
 {
-	public function home(App $app)
+	public function home(User $user)
 	{
-		$app->load(['tracks', 'tracks.points']);
+		$user->load(['tracks', 'tracks.locations']);
 
-		$tracksDistances = $app->tracks
-			->map(function (GpsTrack $track) {
+		$tracksDistances = $user->tracks
+			->map(function (Track $track) {
 				return [
 					"id" => $track->id,
 					"distance" => $track->getDistance() / 1_000,
@@ -49,9 +49,9 @@ class DashboardController
 //			->take(-4);
 
 		return view("dashboard.total", [
-			"app" => $app,
+			"app" => $user,
 			"tracksDistances" => $tracksDistances,
-			"tracks" => $app->tracks,
+			"tracks" => $user->tracks,
 			"weekly" => $weeklyDistances,
 		]);
 	}

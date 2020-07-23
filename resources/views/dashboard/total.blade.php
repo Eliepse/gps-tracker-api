@@ -1,6 +1,6 @@
 <?php
 /**
- * @var \App\App $app
+ * @var \App\User $app
  */
 ?>
 <html lang="fr" class="text-gray-900 antialiased leading-tight">

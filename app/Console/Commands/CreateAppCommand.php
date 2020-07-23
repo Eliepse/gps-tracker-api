@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\App;
+use App\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -42,7 +42,7 @@ class CreateAppCommand extends Command
 	 */
 	public function handle()
 	{
-		$app = new App();
+		$app = new User();
 		$app->name = $this->argument('name');
 		$app->uuid = Str::uuid();
 		$app->password = Hash::make($password = Str::random(32));

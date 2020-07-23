@@ -2,26 +2,25 @@
 
 namespace Tests\Unit;
 
-use App\GpsPoint;
-use App\GpsTrack;
+use App\Track;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class GpsTrackTest extends TestCase
+class TrackTest extends TestCase
 {
 	use RefreshDatabase;
 
 	/**
 	 * Add a serie of GpsPoints to the given GpsTrack
 	 *
-	 * @param GpsTrack $track
+	 * @param Track $track
 	 * @param int $steps
 	 *
-	 * @return GpsTrack
+	 * @return Track
 	 * @throws \Exception
 	 */
-	private function traceTrack(GpsTrack $track, int $steps = 10): GpsTrack
+	private function traceTrack(Track $track, int $steps = 10): Track
 	{
 		$longitude = 2.3472;
 		$latitude = 48.8579;
@@ -30,7 +29,7 @@ class GpsTrackTest extends TestCase
 		$time = Carbon::now();
 
 		for (; $steps > 0; $steps--) {
-			$track->points()->create([
+			$track->locations()->create([
 				"longitude" => $longitude,
 				"latitude" => $latitude,
 				"accuracy" => $accuracy,
@@ -45,7 +44,7 @@ class GpsTrackTest extends TestCase
 			$time->addSeconds(15);
 		}
 
-		$track->load("points");
+		$track->load("locations");
 		return $track;
 	}
 
@@ -53,24 +52,24 @@ class GpsTrackTest extends TestCase
 	/** @test */
 	public function factory_works()
 	{
-		$track = factory(GpsTrack::class)->create();
-		$this->assertEquals(GpsTrack::class, get_class($track));
+		$track = factory(Track::class)->create();
+		$this->assertEquals(Track::class, get_class($track));
 		$this->assertTrue($track->exists);
 	}
 
 
 	/** @test */
-	public function it_stores_gps_points_relation()
+	public function it_stores_locations_relation()
 	{
-		$track = $this->traceTrack(factory(GpsTrack::class)->create(), 10);
-		$this->assertCount(10, $track->points()->get());
+		$track = $this->traceTrack(factory(Track::class)->create(), 10);
+		$this->assertCount(10, $track->locations()->get());
 	}
 
 
 	/** @test */
 	public function it_has_non_null_duration()
 	{
-		$track = $this->traceTrack(factory(GpsTrack::class)->create(), 10);
+		$track = $this->traceTrack(factory(Track::class)->create(), 10);
 		// The first point is stored at deltaTime = 0, so the duration is not 150 but '(10 - 1) * 15'
 		$this->assertEquals(135, $track->getDuration()->totalSeconds);
 	}
@@ -79,20 +78,20 @@ class GpsTrackTest extends TestCase
 	/** @test */
 	public function it_has_non_null_distance()
 	{
-		$track = $this->traceTrack(factory(GpsTrack::class)->create(), 10);
+		$track = $this->traceTrack(factory(Track::class)->create(), 10);
 		$this->assertGreaterThan(0, $track->getDistance());
 	}
 
 
 	/** @test */
-	public function it_returns_zero_on_unsufficient_points()
+	public function it_returns_zero_on_unsufficient_locations()
 	{
-		/** @var GpsTrack $track */
-		$track = factory(GpsTrack::class)->create();
+		/** @var Track $track */
+		$track = factory(Track::class)->create();
 		$this->assertEquals(0, $track->getDistance());
 		$this->assertEquals(0, $track->getDuration()->totalSeconds);
 
-		$track = $this->traceTrack(factory(GpsTrack::class)->create(), 1);
+		$track = $this->traceTrack(factory(Track::class)->create(), 1);
 		$this->assertEquals(0, $track->getDistance());
 		$this->assertEquals(0, $track->getDuration()->totalSeconds);
 	}
@@ -101,7 +100,7 @@ class GpsTrackTest extends TestCase
 	/** @test */
 	public function it_caches_distance()
 	{
-		$track = $this->traceTrack(factory(GpsTrack::class)->create(), 2);
+		$track = $this->traceTrack(factory(Track::class)->create(), 2);
 		$first_distance = $track->getDistance();
 		$track = $this->traceTrack($track, 3);
 
