@@ -11,12 +11,14 @@ export default new Vuex.Store({
 	getters: {},
 	mutations: {
 		addTracks: (state, tracks) => tracks.forEach(track => { state.tracks[track.id] = track }),
-		addLocation: (state, location) => {
-			const track = state.tracks[location.track_id];
-			if (!isArray(track.locations)) {
-				track.locations = [];
-			}
-			track.locations.push(location);
+		addLocations: (state, locations) => {
+			locations.forEach(location => {
+				const track = state.tracks[location.track_id];
+				if (!track.locations) {
+					track.locations = [];
+				}
+				track.locations.push(location)
+			})
 		},
 	},
 	actions: {

@@ -36,11 +36,26 @@
 			if (this.track_id) {
 				this.$store.dispatch("loadTrack", this.track_id)
 					.then(() => {
-						this.drawTracks(Object.values(this.$store.state.tracks))
-						//echo.channel(`App.Track.${this.track_id}`)
-						//	.listen("LocationsStoredEvent", (locations) => {
-						//		console.debug(locations);
-						//	})
+						let line = Leaflet.polyline([], {
+							opacity: .5,
+							weight: 2,
+							color: "#333333",
+						});
+						line.setLatLngs(
+							this.$store.state.tracks[this.track_id].locations.reduce((acc, location) => {
+								acc.push([location.latitude, location.longitude]);
+								return acc;
+							}, [])
+						);
+						line.addTo(this.map);
+						//this.drawTracks(Object.values(this.$store.state.tracks))
+						echo.channel(`App.Track.${this.track_id}`)
+							.listen("LocationsStoredEvent", (data) => {
+								this.$store.commit("addLocations", data.locations)
+								data.locations.forEach(location => {
+									line.addLatLng([location.latitude, location.longitude])
+								})
+							})
 					})
 			} else {
 				this.$store.dispatch("loadUserTracks", this.user_id)
