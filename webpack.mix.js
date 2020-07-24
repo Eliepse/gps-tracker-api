@@ -18,7 +18,9 @@ mix.disableNotifications()
 	.less('resources/less/app.less', 'public/css')
 	.options({
 		postCss: [
-			tailwindcss(),
+			tailwindcss({
+				purge: false
+			}),
 		]
 	})
 
