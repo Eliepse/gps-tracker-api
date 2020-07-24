@@ -16,6 +16,6 @@ use App\Http\Controllers\Dashboard\MapController;
 use App\Http\Controllers\Dashboard\RedirectToLastTrackController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/app/{app}', [DashboardController::class, 'home']);
+Route::get('/users/{user}', DashboardController::class);
 Route::get('/users/{user}/map/last', RedirectToLastTrackController::class)->name('map:last');
 Route::get('/users/{user}/map/{track?}', MapController::class)->name('map');

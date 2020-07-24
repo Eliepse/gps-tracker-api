@@ -1,12 +1,12 @@
 <?php
 /**
- * @var \App\User $app
+ * @var \App\User $user
  */
 ?>
 <html lang="fr" class="text-gray-900 antialiased leading-tight">
 <head>
 	<meta charset="UTF-8">
-	<title>Statistiques de {{ $app->name }}</title>
+	<title>Statistiques de {{ $user->name }}</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
 	<link href="{{ mix("css/app.css") }}" rel="stylesheet">
 	<link rel="stylesheet" href="{{ mix('/css/map.css') }}">
@@ -14,7 +14,7 @@
 <body class="min-h-screen bg-gray-100">
 
 <div class="container p-8 m-auto">
-	<h1 class="text-4xl text-center mb-12">Statistiques de <span class="text-indigo-500">{{ $app->name }}</span></h1>
+	<h1 class="text-4xl text-center mb-12">Statistiques de <span class="text-indigo-500">{{ $user->name }}</span></h1>
 	<div class="flex flex-row mt-4 mb-4 text-center justify-center">
 		<div class="flex flex-col mx-4">
 			<span class="text-2xl mb-2">{{ $tracks->count() }}</span>
@@ -28,7 +28,7 @@
 
 	<div class="text-center mt-10 mb-8">
 		<button class="bg-gray-300 hover:bg-gray-500 text-teal-900 font-bold py-2 px-4 rounded">
-			<a href="{{ action(\App\Http\Controllers\Dashboard\MapController::class, [$app]) }}">
+			<a href="{{ action(\App\Http\Controllers\Dashboard\MapController::class, [$user]) }}">
 				Carte
 			</a>
 		</button>
@@ -58,7 +58,7 @@
 			@foreach($tracksDistances->reverse()->take(15) as $track)
 				<tr>
 					<td class="border px-4 py-2">
-						<a href="{{ route("map", ["userApp" => $app, "track" => $track['id']]) }}">
+						<a href="{{ route("map", [$user, $track['id']]) }}">
 						{{ $track["time"]->format("d M, H:i") }}
 						</a>
 					</td>

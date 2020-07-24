@@ -26,8 +26,10 @@ class MapControllerTest extends TestCase
 		/** @var User $user */
 		$user = factory(User::class)->create();
 		$this->get(action(MapController::class, [$user]))
+			->assertOk()
 			->assertViewIs("dashboard.map");
 		$this->get(action(MapController::class, [$user, $user->tracks()->create()]))
+			->assertOk()
 			->assertViewIs("dashboard.map");
 	}
 }

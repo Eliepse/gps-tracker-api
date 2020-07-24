@@ -10,7 +10,7 @@ use Carbon\Carbon;
 
 class DashboardController
 {
-	public function home(User $user)
+	public function __invoke(User $user)
 	{
 		$user->load(['tracks', 'tracks.locations']);
 
@@ -49,7 +49,7 @@ class DashboardController
 //			->take(-4);
 
 		return view("dashboard.total", [
-			"app" => $user,
+			"user" => $user,
 			"tracksDistances" => $tracksDistances,
 			"tracks" => $user->tracks,
 			"weekly" => $weeklyDistances,
