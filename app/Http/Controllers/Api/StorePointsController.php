@@ -3,15 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\Events\LocationsStoredEvent;
+use App\Http\Requests\StorePointsRequest;
 use App\Location;
 use App\Track;
 use App\Http\Requests\StoreLocationsRequest;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
 
-class StoreLocationsController
+/**
+ * Class StorePointsController
+ *
+ * @package App\Http\Controllers\Api
+ * @deprecated
+ */
+class StorePointsController
 {
-	public function __invoke(StoreLocationsRequest $request, Track $track): Response
+	public function __invoke(StorePointsRequest $request, Track $track): Response
 	{
 		if (! $track->user->is($request->user())) {
 			return response()->noContent(403);
@@ -24,7 +31,7 @@ class StoreLocationsController
 					'longitude' => $item['longitude'],
 					'altitude' => $item['altitude'] ?? null,
 					'accuracy' => $item['accuracy'],
-					'time' => Carbon::createFromTimestamp($item['time']),
+					'time' => Carbon::createFromTimestamp(round($item['time'] / 1000)),
 				]);
 			});
 

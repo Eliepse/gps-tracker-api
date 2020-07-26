@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\StorePointsController;
 use App\Http\Controllers\Api\TrackResourceController;
 use App\Http\Controllers\Api\StoreLocationsController;
 use Illuminate\Support\Facades\Route;
@@ -15,14 +16,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::middleware('auth:api')
-//	->get('/user', function (Request $request) {
-//		return $request->user();
-//	});
-
-Route::middleware('auth:api')->post('track/{track}/points', StoreLocationsController::class);
+/** @deprecated */
+Route::middleware('auth:api')->post('track/{track}/points', StorePointsController::class);
+/** @deprecated */
 Route::middleware('auth:api')->post("track", TrackResourceController::class . "@store");
+/** @deprecated */
+Route::get("apps/{user}/tracks", TrackResourceController::class . "@index");
+
+Route::middleware('auth:api')->post('tracks/{track}/locations', StoreLocationsController::class);
+Route::middleware('auth:api')->post("tracks", TrackResourceController::class . "@store");
 Route::middleware('auth:api')->get("tracks", TrackResourceController::class . "@index");
 
-Route::get("apps/{user}/tracks", TrackResourceController::class . "@index");
+Route::get("users/{user}/tracks", TrackResourceController::class . "@index");
 Route::get("tracks/{track}", TrackResourceController::class . "@show");

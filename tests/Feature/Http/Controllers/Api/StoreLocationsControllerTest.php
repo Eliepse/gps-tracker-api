@@ -36,7 +36,7 @@ class StoreLocationsControllerTest extends TestCase
 	{
 		$track = factory(Track::class)->create();
 		$this->withHeader("Authorization", "Bearer " . $track->user->api_token)
-			->postJson(action(StoreLocationsController::class, [$track]), ["points" => $this->makeLocations()])
+			->postJson(action(StoreLocationsController::class, [$track]), ["locations" => $this->makeLocations()])
 			->assertSuccessful()
 			->assertJson(["status" => "ok"]);
 		$this->assertCount(10, $track->locations);
@@ -51,6 +51,6 @@ class StoreLocationsControllerTest extends TestCase
 		$this->expectsEvents(LocationsStoredEvent::class);
 
 		$this->withHeader("Authorization", "Bearer " . $track->user->api_token)
-			->postJson(action(StoreLocationsController::class, [$track]), ["points" => $this->makeLocations()]);
+			->postJson(action(StoreLocationsController::class, [$track]), ["locations" => $this->makeLocations()]);
 	}
 }

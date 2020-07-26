@@ -32,7 +32,7 @@ export default new Vuex.Store({
 		},
 		loadUserTracks: async function (ctx, user_id) {
 			try {
-				const response = await axios.get(`/api/apps/${user_id}/tracks`);
+				const response = await axios.get(`/api/users/${user_id}/tracks`);
 				await ctx.commit("addTracks", response.data);
 			} catch (err) {
 				console.error(err);

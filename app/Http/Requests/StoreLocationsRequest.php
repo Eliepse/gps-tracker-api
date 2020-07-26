@@ -14,7 +14,7 @@ class StoreLocationsRequest extends FormRequest
 	 */
 	public function authorize()
 	{
-		return is_a($this->user(), User::class);
+		return $this->user();
 	}
 
 
@@ -26,12 +26,12 @@ class StoreLocationsRequest extends FormRequest
 	public function rules()
 	{
 		return [
-			'points' => 'required|array|min:1',
-			'points.*.longitude' => 'required|numeric|between:-180,180',
-			'points.*.latitude' => 'required|numeric|between:-90,90',
-			'points.*.altitude' => 'sometimes|nullable|numeric',
-			'points.*.accuracy' => 'required|numeric',
-			'points.*.time' => 'required|numeric',
+			'locations' => 'required|array|min:1',
+			'locations.*.longitude' => 'required|numeric|between:-180,180',
+			'locations.*.latitude' => 'required|numeric|between:-90,90',
+			'locations.*.altitude' => 'sometimes|nullable|numeric',
+			'locations.*.accuracy' => 'required|numeric',
+			'locations.*.time' => 'required|numeric',
 		];
 	}
 }
