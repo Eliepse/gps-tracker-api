@@ -38,7 +38,7 @@ class Track extends Model
 
 	public function locations(): HasMany
 	{
-		return $this->hasMany(Location::class, "track_id", "id");
+		return $this->hasMany(Location::class, "track_id", "id")->orderBy("time");
 	}
 
 
