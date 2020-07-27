@@ -24,7 +24,7 @@ class StorePointsController
 			return response()->noContent(403);
 		}
 
-		$locations = collect($request->get("locations"))
+		$locations = collect($request->get("points"))
 			->transform(function (array $item) {
 				return new Location([
 					'latitude' => $item['latitude'],
