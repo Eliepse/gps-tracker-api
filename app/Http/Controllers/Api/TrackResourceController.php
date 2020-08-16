@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\User;
 use App\Track;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,6 +18,7 @@ final class TrackResourceController
 		// TODO: use Laravel's Resources
 		$tracks = $user->tracks()
 			->select(["id", "user_id"])
+			->whereDate("created_at", ">=", Carbon::today()->subMonth())
 			->with(["locations:id,track_id,longitude,latitude"])
 			->get();
 
