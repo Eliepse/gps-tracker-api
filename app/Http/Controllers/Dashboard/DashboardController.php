@@ -4,55 +4,54 @@
 namespace App\Http\Controllers\Dashboard;
 
 
+use App\Cache\UserDistances;
 use App\User;
 use App\Track;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController
 {
 	public function __invoke(User $user)
 	{
-		$user->load(['tracks', 'tracks.locations']);
+		$tracks_km = collect();
+		$from_date = Carbon::now()->subWeeks(3)->startOfWeek();
+		/** @var UserDistances $cached_distances */
+		$cached_distances = Cache::get("users:distances", new UserDistances());
+		$total_distance = 0;
 
-		$tracksDistances = $user->tracks
-			->map(function (Track $track) {
-				return [
-					"id" => $track->id,
+		$query = $user->tracks()->select(["id", "user_id", "created_at"]);
+
+		if ($cached_distances->isValid() && $cached_distances->isUserCached($user->id)) {
+			$query->whereDate("created_at", ">=", $cached_distances->cached_until);
+			$total_distance = $cached_distances->getUserDistance($user->id);
+		}
+
+		$query->chunk(50, function (Collection $tracks) use ($tracks_km) {
+			$tracks->load(["locations:id,track_id,longitude,latitude,time"]);
+			/** @var Track $track */
+			foreach ($tracks as $track) {
+				$tracks_km->put($track->id, [
 					"distance" => $track->getDistance() / 1_000,
 					"duration" => $track->getDuration(),
 					"time" => $track->created_at,
-				];
-			});
+				]);
+			}
+		});
 
-		$weeklyDistances = collect();
-
-		for (
-			$weekStart = Carbon::now()->startOfWeek()->subWeeks(3);
-			$weekStart->isBefore(Carbon::now());
-			$weekStart->addWeek()
-		) {
-			$weekEnd = $weekStart->clone()->endOfWeek();
-			$distance = $tracksDistances
-				->filter(function (array $track) use ($weekStart, $weekEnd) {
-					return $track["time"]->between($weekStart, $weekEnd);
-				})
-				->sum("distance");
-
-			$weeklyDistances->put(
-				$weekStart->timestamp,
-				round($distance, 1)
-			);
-		}
-//		$weeklyDistances = $tracksDistances
-//			->groupBy(function (array $track) { return $track["time"]->clone()->startOfWeek()->timestamp; })
-//			->map(function ($tracks) { return round($tracks->sum("distance"), 1); })
-//			->take(-4);
+		$total_distance += $tracks_km->sum("distance");
+		$weekly_km = $tracks_km->filter(fn(array $track) => $from_date->isBefore($track["time"]))
+			->groupBy(fn(array $track) => $track['time']->startOf('week', Carbon::MONDAY)->timestamp)
+			->map(fn($tracks) => round($tracks->sum("distance")));
 
 		return view("dashboard.total", [
 			"user" => $user,
-			"tracksDistances" => $tracksDistances,
-			"tracks" => $user->tracks,
-			"weekly" => $weeklyDistances,
+			"tracksDistances" => $tracks_km,
+			"total_distance" => $total_distance,
+			"tracks_count" => $user->tracks()->count(),
+			"weekly" => $weekly_km,
 		]);
 	}
 }

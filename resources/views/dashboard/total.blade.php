@@ -17,7 +17,7 @@
 	<h1 class="text-4xl text-center mb-12">Statistiques de <span class="text-indigo-500">{{ $user->name }}</span></h1>
 	<div class="flex flex-row mt-4 mb-4 text-center justify-center">
 		<div class="flex flex-col mx-4">
-			<span class="text-2xl mb-2">{{ $tracks->count() }}</span>
+			<span class="text-2xl mb-2">{{ $tracks_count }}</span>
 			<span class="text-xs uppercase">trajets</span>
 		</div>
 		<div class="flex flex-col mx-4">
@@ -39,7 +39,7 @@
 		@foreach($weekly as $timestamp => $week)
 			<div class="flex flex-col mx-4">
 				<span class="text-2xl mb-2">{{ $week }} <small>km</small></span>
-				<span class="text-xs uppercase">{{ \Carbon\Carbon::createFromTimestamp($timestamp)->format("d M Y") }}</span>
+				<span class="text-xs uppercase">{{ optional(\Carbon\Carbon::createFromTimestamp($timestamp))->format("d M Y") }}</span>
 			</div>
 		@endforeach
 	</div>
@@ -55,10 +55,10 @@
 			</tr>
 			</thead>
 			<tbody>
-			@foreach($tracksDistances->reverse()->take(15) as $track)
+			@foreach($tracksDistances->reverse()->take(15) as $track_id => $track)
 				<tr>
 					<td class="border px-4 py-2">
-						<a href="{{ route("map", [$user, $track['id']]) }}">
+						<a href="{{ route("map", [$user, $track_id]) }}">
 						{{ $track["time"]->format("d M, H:i") }}
 						</a>
 					</td>
