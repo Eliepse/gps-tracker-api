@@ -45,14 +45,12 @@ class Location extends Model
 	 */
 	public function distanceTo(Location $point): float
 	{
-		$eQuatorialEarthRadius = 6378137.0;
-		$d2r = pi() / 180;
-		$dlong = ($point->longitude - $this->longitude) * $d2r;
-		$dlat = ($point->latitude - $this->latitude) * $d2r;
-		$a = pow(sin($dlat / 2.0), 2.0) + cos($this->latitude * $d2r) * cos($point->latitude * $d2r) * pow(sin($dlong / 2.0), 2.0);
-		$c = 2.0 * atan2(sqrt($a), sqrt(1.0 - $a));
-
-		return $eQuatorialEarthRadius * $c;
+		// Equirectangular calculation
+		$lng1 = abs($this->longitude);
+		$lng2 = abs($point->longitude);
+		$x = deg2rad($lng2 - $lng1) * cos(deg2rad($this->latitude + $point->latitude) / 2);
+		$y = deg2rad($this->latitude - $point->latitude);
+		return sqrt($x * $x + $y * $y) * 6378137;
 	}
 
 
