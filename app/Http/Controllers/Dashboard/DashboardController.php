@@ -43,7 +43,7 @@ class DashboardController
 
 		$total_distance += $tracks_km->sum("distance");
 		$weekly_km = $tracks_km->filter(fn(array $track) => $from_date->isBefore($track["time"]))
-			->groupBy(fn(array $track) => $track['time']->startOf('week', Carbon::MONDAY)->timestamp)
+			->groupBy(fn(array $track) => $track['time']->clone()->startOf('week', Carbon::MONDAY)->timestamp)
 			->map(fn($tracks) => round($tracks->sum("distance")));
 
 		return view("dashboard.total", [
