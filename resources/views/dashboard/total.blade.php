@@ -56,7 +56,7 @@
 			</tr>
 			</thead>
 			<tbody>
-			@foreach($past_tracks->take(-15) as $track)
+			@foreach($past_tracks->reverse()->take(15) as $track)
 				<tr>
 					<td class="border px-4 py-2">
 						<a href="{{ route("map", [$user, $track]) }}">{{ $track->created_at->format("d M, H:i") }}</a>
