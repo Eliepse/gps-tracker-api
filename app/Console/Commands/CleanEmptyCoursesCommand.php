@@ -1,58 +1,33 @@
 <?php
+/** @noinspection PhpMissingFieldTypeInspection */
 
 namespace App\Console\Commands;
 
 use App\Track;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Collection;
 
 class CleanEmptyCoursesCommand extends Command
 {
-	/**
-	 * The name and signature of the console command.
-	 *
-	 * @var string
-	 */
 	protected $signature = 'app:clean';
-
-	/**
-	 * The console command description.
-	 *
-	 * @var string
-	 */
 	protected $description = 'Clean courses that have less than two GpsPoint';
 
 
-	/**
-	 * Create a new command instance.
-	 *
-	 * @return void
-	 */
 	public function __construct()
 	{
 		parent::__construct();
 	}
 
 
-	/**
-	 * Execute the console command.
-	 *
-	 * @return mixed
-	 */
-	public function handle()
+	public function handle(): void
 	{
-		/** @var Collection $tracks */
-		$tracks = Track::select(['id'])
+		$tracks = Track::query()
+			->select(['id'])
+			->where("distance", "===", 0)
 			->withCount("locations")
 			->get()
 			->filter(function ($track) { return $track->locations_count < 2; });
-
 		$count = $tracks->count();
-
-		$tracks->each(function (Track $track) {
-			$track->delete();
-		});
-
+		$tracks->each(fn(Track $track) => $track->delete());
 		$this->info("$count tracks deleted.");
 	}
 }
