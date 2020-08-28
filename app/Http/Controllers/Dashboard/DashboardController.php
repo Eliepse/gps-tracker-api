@@ -34,7 +34,7 @@ class DashboardController
 			/** @var Track $track */
 			foreach ($tracks as $track) {
 				$tracks_km->put($track->id, [
-					"distance" => $track->getDistance() / 1_000,
+					"distance" => $track->getDistance(),
 					"duration" => $track->getDuration(),
 					"time" => $track->created_at,
 				]);
@@ -42,14 +42,15 @@ class DashboardController
 		});
 
 		$total_distance += $tracks_km->sum("distance");
+
 		$weekly_km = $tracks_km->filter(fn(array $track) => $from_date->isBefore($track["time"]))
 			->groupBy(fn(array $track) => $track['time']->clone()->startOf('week', Carbon::MONDAY)->timestamp)
-			->map(fn($tracks) => round($tracks->sum("distance")));
+			->map(fn($tracks) => round($tracks->sum("distance") / 1_000));
 
 		return view("dashboard.total", [
 			"user" => $user,
 			"tracksDistances" => $tracks_km,
-			"total_distance" => $total_distance,
+			"total_distance" => round($total_distance / 1_000),
 			"tracks_count" => $user->tracks()->count(),
 			"weekly" => $weekly_km,
 		]);

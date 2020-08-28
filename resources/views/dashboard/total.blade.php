@@ -21,7 +21,7 @@
 			<span class="text-xs uppercase">trajets</span>
 		</div>
 		<div class="flex flex-col mx-4">
-			<span class="text-2xl mb-2">{{ number_format($tracksDistances->sum('distance'), 1, ',', ' ') }}<small> km</small></span>
+			<span class="text-2xl mb-2">{{ number_format($total_distance, 1, ',', ' ') }}<small> km</small></span>
 			<span class="text-xs uppercase">parcourus</span>
 		</div>
 	</div>
@@ -62,7 +62,7 @@
 						{{ $track["time"]->format("d M, H:i") }}
 						</a>
 					</td>
-					<td class="border px-4 py-2">{{ number_format($track["distance"], 1, ',', ' ') }}
+					<td class="border px-4 py-2">{{ number_format(round($track["distance"] / 1_000, 1), 1, ',', ' ') }}
 						<small>km</small>
 					</td>
 					<td class="border px-4 py-2">
