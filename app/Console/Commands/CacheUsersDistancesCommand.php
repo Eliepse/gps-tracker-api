@@ -38,8 +38,8 @@ class CacheUsersDistancesCommand extends Command
 				->chunk(100, function (Collection $tracks) use (&$total, $progress) {
 					$tracks->load(["locations:id,track_id,longitude,latitude,time"]);
 					$total += $tracks->sum(function (Track $track) use ($progress) {
-						$track->getDistance();
 						$progress->advance();
+						return $track->getDistance();
 					});
 				});
 			$cache->setUserDustance($user->id, $total);

@@ -26,7 +26,7 @@ class DashboardController
 
 		if ($cached_distances->isValid() && $cached_distances->isUserCached($user->id)) {
 			$query->whereDate("created_at", ">=", $cached_distances->cached_until);
-			$total_distance = $cached_distances->getUserDistance($user->id);
+			$total_distance += $cached_distances->getUserDistance($user->id);
 		}
 
 		$query->chunk(50, function (Collection $tracks) use ($tracks_km) {
