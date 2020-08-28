@@ -1,6 +1,7 @@
 <?php
 /**
  * @var \App\User $user
+ * @var \App\Track $track
  */
 ?>
 <html lang="fr" class="text-gray-900 antialiased leading-tight">
@@ -21,7 +22,7 @@
 			<span class="text-xs uppercase">trajets</span>
 		</div>
 		<div class="flex flex-col mx-4">
-			<span class="text-2xl mb-2">{{ number_format($total_distance, 1, ',', ' ') }}<small> km</small></span>
+			<span class="text-2xl mb-2">{{ number_format(round($total_distance / 1_000), 0, ',', ' ') }}<small> km</small></span>
 			<span class="text-xs uppercase">parcourus</span>
 		</div>
 	</div>
@@ -38,7 +39,7 @@
 	<div class="flex flex-row mt-4 mb-4 text-center justify-center">
 		@foreach($weekly as $timestamp => $week)
 			<div class="flex flex-col mx-4">
-				<span class="text-2xl mb-2">{{ $week }} <small>km</small></span>
+				<span class="text-2xl mb-2">{{ round($week / 1_000) }} <small>km</small></span>
 				<span class="text-xs uppercase">{{ optional(\Carbon\Carbon::createFromTimestamp($timestamp))->format("d M Y") }}</span>
 			</div>
 		@endforeach
@@ -55,21 +56,19 @@
 			</tr>
 			</thead>
 			<tbody>
-			@foreach($tracksDistances->reverse()->take(15) as $track_id => $track)
+			@foreach($past_tracks->take(-15) as $track)
 				<tr>
 					<td class="border px-4 py-2">
-						<a href="{{ route("map", [$user, $track_id]) }}">
-						{{ $track["time"]->format("d M, H:i") }}
-						</a>
-					</td>
-					<td class="border px-4 py-2">{{ number_format(round($track["distance"] / 1_000, 1), 1, ',', ' ') }}
-						<small>km</small>
+						<a href="{{ route("map", [$user, $track]) }}">{{ $track->created_at->format("d M, H:i") }}</a>
 					</td>
 					<td class="border px-4 py-2">
-						@if($track["duration"]->hours)
-							{{ $track["duration"]->hours }} h
+						{{ number_format(round($track->distance / 1_000, 1), 1, ',', ' ') }}<small>km</small>
+					</td>
+					<td class="border px-4 py-2">
+						@if($track->getDuration()->hours)
+							{{ $track->getDuration()->hours }} h
 						@endif
-						{{ $track["duration"]->minutes }} min {{ $track["duration"]->seconds }} s
+						{{ $track->getDuration()->minutes }} min {{ $track->getDuration()->seconds }} s
 					</td>
 				</tr>
 			@endforeach

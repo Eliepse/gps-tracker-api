@@ -36,6 +36,9 @@ class StorePointsController
 			});
 
 		$track->locations()->saveMany($locations);
+		$track->load("locations:id,track_id,longitude,latitude");
+		$track->distance = $track->getDistance();
+		$track->save();
 
 		event(new LocationsStoredEvent($track, $locations->toArray()));
 

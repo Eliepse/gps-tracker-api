@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @package App
  * @property-read int $id
  * @property int $user_id
+ * @property float $distance
  * @property-read Carbon $created_at
  * @property-read Carbon $updated_at
  * @property-read User $user
@@ -26,7 +27,6 @@ class Track extends Model
 
 	protected $fillable = ['app_id'];
 
-	private $distance = null;
 	private $durationWithoutPause = null;
 
 
@@ -50,21 +50,21 @@ class Track extends Model
 	 *
 	 * @return float Returns the total distance in meters
 	 */
-	public function getDistance(bool $force = false): float
+	public function getDistance(bool $force = false): int
 	{
-		if (! is_null($this->distance) && ! $force) {
+		if (is_numeric($this->distance) && $this->distance > 0 && ! $force) {
 			return $this->distance;
 		}
 
 		if ($this->locations->count() < 2) {
-			return 0.0;
+			return 0;
 		}
 
 		$this->distance = 0.0;
 		for ($h = 0, $i = 1; $i < $this->locations->count(); $i++, $h++) {
 			$this->distance += $this->locations[ $i ]->distanceTo($this->locations[ $h ]);
 		}
-		return $this->distance;
+		return $this->distance = round($this->distance);
 	}
 
 

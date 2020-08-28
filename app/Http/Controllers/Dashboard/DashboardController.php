@@ -4,53 +4,26 @@
 namespace App\Http\Controllers\Dashboard;
 
 
-use App\Cache\UserDistances;
 use App\User;
-use App\Track;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 
 class DashboardController
 {
 	public function __invoke(User $user)
 	{
-		$tracks_km = collect();
-		$from_date = Carbon::now()->subWeeks(3)->startOfWeek();
-		/** @var UserDistances $cached_distances */
-		$cached_distances = Cache::get("users:distances", new UserDistances());
-		$total_distance = 0;
+		$past_tracks = $user->tracks()
+			->whereDate("created_at", ">=", Carbon::now()->subWeeks(3)->startOfWeek())
+			->orderBy("created_at")
+			->get(["id", "user_id", "distance", "created_at"]);
 
-		$query = $user->tracks()->select(["id", "user_id", "created_at"]);
-
-		if ($cached_distances->isValid() && $cached_distances->isUserCached($user->id)) {
-			$query->whereDate("created_at", ">=", $cached_distances->cached_until);
-			$total_distance += $cached_distances->getUserDistance($user->id);
-		}
-
-		$query->chunk(50, function (Collection $tracks) use ($tracks_km) {
-			$tracks->load(["locations:id,track_id,longitude,latitude,time"]);
-			/** @var Track $track */
-			foreach ($tracks as $track) {
-				$tracks_km->put($track->id, [
-					"distance" => $track->getDistance(),
-					"duration" => $track->getDuration(),
-					"time" => $track->created_at,
-				]);
-			}
-		});
-
-		$total_distance += $tracks_km->sum("distance");
-
-		$weekly_km = $tracks_km->filter(fn(array $track) => $from_date->isBefore($track["time"]))
-			->groupBy(fn(array $track) => $track['time']->clone()->startOf('week', Carbon::MONDAY)->timestamp)
-			->map(fn($tracks) => round($tracks->sum("distance") / 1_000));
+		$weekly_km = $past_tracks
+			->groupBy(fn($track) => $track->created_at->clone()->startOf('week', Carbon::MONDAY)->timestamp)
+			->map(fn($week_tracks) => $week_tracks->sum("distance"));
 
 		return view("dashboard.total", [
 			"user" => $user,
-			"tracksDistances" => $tracks_km,
-			"total_distance" => round($total_distance / 1_000),
+			"past_tracks" => $past_tracks,
+			"total_distance" => $user->tracks()->sum("distance"),
 			"tracks_count" => $user->tracks()->count(),
 			"weekly" => $weekly_km,
 		]);
