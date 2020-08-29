@@ -12,7 +12,11 @@ final class Time implements CastsAttributes
 
 	public function get($model, string $key, $value, array $attributes): CarbonInterval
 	{
-		return is_string($value) ? CarbonInterval::createFromFormat("H:i:s", $value) : CarbonInterval::seconds(0);
+		if (! is_string($value) || strlen($value) < 7) {
+			return CarbonInterval::seconds(0);
+		}
+
+		return CarbonInterval::createFromFormat("H:i:s", $value);
 	}
 
 
