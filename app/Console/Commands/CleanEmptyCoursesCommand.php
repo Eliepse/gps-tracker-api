@@ -23,6 +23,7 @@ class CleanEmptyCoursesCommand extends Command
 		$tracks = Track::query()
 			->select(['id'])
 			->where("distance", "===", 0)
+			->where("duration", "===", 0)
 			->withCount("locations")
 			->get()
 			->filter(function ($track) { return $track->locations_count < 2; });

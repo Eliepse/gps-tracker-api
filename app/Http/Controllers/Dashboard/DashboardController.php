@@ -14,7 +14,7 @@ class DashboardController
 		$past_tracks = $user->tracks()
 			->whereDate("created_at", ">=", Carbon::now()->subWeeks(3)->startOfWeek())
 			->orderBy("created_at")
-			->get(["id", "user_id", "distance", "created_at"]);
+			->get(["id", "user_id", "distance", "duration", "created_at"]);
 
 		$weekly_km = $past_tracks
 			->groupBy(fn($track) => $track->created_at->clone()->startOf('week', Carbon::MONDAY)->timestamp)

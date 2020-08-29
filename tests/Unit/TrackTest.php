@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Track;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -71,7 +72,7 @@ class TrackTest extends TestCase
 	{
 		$track = $this->traceTrack(factory(Track::class)->create(), 10);
 		// The first point is stored at deltaTime = 0, so the duration is not 150 but '(10 - 1) * 15'
-		$this->assertEquals(135, $track->getDuration()->totalSeconds);
+		$this->assertEquals(135, $track->calculateDuration()->totalSeconds);
 	}
 
 
@@ -89,11 +90,11 @@ class TrackTest extends TestCase
 		/** @var Track $track */
 		$track = factory(Track::class)->create();
 		$this->assertEquals(0, $track->getDistance());
-		$this->assertEquals(0, $track->getDuration()->totalSeconds);
+		$this->assertEquals(0, $track->calculateDuration()->totalSeconds);
 
 		$track = $this->traceTrack(factory(Track::class)->create(), 1);
 		$this->assertEquals(0, $track->getDistance());
-		$this->assertEquals(0, $track->getDuration()->totalSeconds);
+		$this->assertEquals(0, $track->calculateDuration()->totalSeconds);
 	}
 
 
@@ -106,5 +107,24 @@ class TrackTest extends TestCase
 
 		$this->assertEquals($first_distance, $track->getDistance());
 		$this->assertGreaterThan($first_distance, $track->getDistance(true));
+	}
+
+
+	/** @test */
+	public function it_casts_duration()
+	{
+		/** @var Track $track */
+		$track = factory(Track::class)->make();
+
+		$track->duration = CarbonInterval::hours(150)->minutes(15)->seconds(01);
+		$this->assertEquals("150:15:01", $track->getAttributes()["duration"]);
+
+		$track->duration = CarbonInterval::hours(1)->minutes(15)->seconds(01)->totalSeconds;
+		$this->assertEquals("01:15:01", $track->getAttributes()["duration"]);
+
+		$track->duration = $interval = CarbonInterval::hours(170)->minutes(07)->seconds(17);
+		$this->assertEquals("170:07:17", $track->getAttributes()["duration"]);
+
+		$this->assertEquals($interval, $track->duration);
 	}
 }

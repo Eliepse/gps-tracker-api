@@ -5,12 +5,15 @@ namespace App\Console\Commands;
 
 use App\Track;
 use App\User;
+use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
 
-class CacheUsersDistancesCommand extends Command
+class OptimizeTracksMetasCommand extends Command
 {
-	protected $signature = 'calc-distances {--force : Recalculate all distances, even already calculated (optional)}';
-	protected $description = 'Calculate all missing tracks distances and stores them in the database.';
+	protected $signature = 'tracks:optimize {--force : Recalculate all metas, even if already calculated (optional)}';
+	protected $description = 'Calculate all missing tracks\' metas (distance, duration) and stores them in the database.';
 
 
 	public function __construct()
@@ -25,7 +28,10 @@ class CacheUsersDistancesCommand extends Command
 			$query = $user->tracks();
 
 			if (! $this->option("force")) {
-				$query->select(["id", "user_id"])->where("distance", "===", 0);
+				$query->where(function (Builder $builder) {
+					$builder->where("distance", 0)
+						->orWhere("duration", 0);
+				});
 			}
 
 			$this->info("Caching user '{$user->name}' (id: {$user->id})");
@@ -33,7 +39,9 @@ class CacheUsersDistancesCommand extends Command
 
 			/** @var Track $track */
 			foreach ($query->get() as $track) {
-				$track->distance = $track->getDistance();
+				$track->load("locations");
+				$track->distance = $track->getDistance(true);
+				$track->duration = $track->calculateDuration(true);
 				$track->save();
 				$progress->advance();
 			}

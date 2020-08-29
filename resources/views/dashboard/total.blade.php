@@ -65,10 +65,10 @@
 						{{ number_format(round($track->distance / 1_000, 1), 1, ',', ' ') }}<small>km</small>
 					</td>
 					<td class="border px-4 py-2">
-						@if($track->getDuration()->hours)
-							{{ $track->getDuration()->hours }} h
+						@if($track->duration->hours)
+							{{ $track->duration->hours }} h
 						@endif
-						{{ $track->getDuration()->minutes }} min {{ $track->getDuration()->seconds }} s
+						{{ $track->duration->minutes }} min {{ $track->duration->seconds }} s
 					</td>
 				</tr>
 			@endforeach

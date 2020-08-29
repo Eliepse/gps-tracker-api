@@ -2,8 +2,10 @@
 
 namespace App;
 
+use App\Casts\Mysql\Time;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +17,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @package App
  * @property-read int $id
  * @property int $user_id
- * @property float $distance
+ * @property int $distance
+ * @property CarbonInterval $duration
  * @property-read Carbon $created_at
  * @property-read Carbon $updated_at
  * @property-read User $user
@@ -24,8 +27,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Track extends Model
 {
 	protected $table = "tracks";
-
 	protected $fillable = ['app_id'];
+	protected $casts = [
+		"duration" => Time::class,
+	];
 
 	private $durationWithoutPause = null;
 
@@ -48,7 +53,7 @@ class Track extends Model
 	 *
 	 * @param bool $force Force to recalculate the distance (do not refresh relations)
 	 *
-	 * @return float Returns the total distance in meters
+	 * @return int Returns the total distance in meters
 	 */
 	public function getDistance(bool $force = false): int
 	{
@@ -71,13 +76,18 @@ class Track extends Model
 	/**
 	 * Calculates the total duration of the track.
 	 *
+	 * @param bool $force
+	 *
 	 * @return CarbonInterval The duration as an interval
-	 * @throws \Exception
 	 */
-	public function getDuration(): CarbonInterval
+	public function calculateDuration(bool $force = false): CarbonInterval
 	{
+		if (! $this->duration->isEmpty() && ! $force) {
+			return $this->duration;
+		}
+
 		if ($this->locations->count() < 2) {
-			return CarbonInterval::create(0);
+			return CarbonInterval::seconds(0);
 		}
 
 		return $this->locations->last()->time->diffAsCarbonInterval($this->locations->first()->time);
@@ -91,7 +101,7 @@ class Track extends Model
 	 * @param bool $force Force to recalculate the estimated duration (do not refresh relations)
 	 *
 	 * @return CarbonInterval The estimated duration as an interval
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function getEstimatedDurationWithoutPause(bool $force = false): CarbonInterval
 	{
