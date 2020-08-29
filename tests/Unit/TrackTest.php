@@ -80,7 +80,7 @@ class TrackTest extends TestCase
 	public function it_has_non_null_distance()
 	{
 		$track = $this->traceTrack(factory(Track::class)->create(), 10);
-		$this->assertGreaterThan(0, $track->getDistance());
+		$this->assertGreaterThan(0, $track->calculateDistance());
 	}
 
 
@@ -89,11 +89,11 @@ class TrackTest extends TestCase
 	{
 		/** @var Track $track */
 		$track = factory(Track::class)->create();
-		$this->assertEquals(0, $track->getDistance());
+		$this->assertEquals(0, $track->calculateDistance());
 		$this->assertEquals(0, $track->calculateDuration()->totalSeconds);
 
 		$track = $this->traceTrack(factory(Track::class)->create(), 1);
-		$this->assertEquals(0, $track->getDistance());
+		$this->assertEquals(0, $track->calculateDistance());
 		$this->assertEquals(0, $track->calculateDuration()->totalSeconds);
 	}
 
@@ -102,11 +102,11 @@ class TrackTest extends TestCase
 	public function it_caches_distance()
 	{
 		$track = $this->traceTrack(factory(Track::class)->create(), 2);
-		$first_distance = $track->getDistance();
+		$first_distance = $track->calculateDistance();
 		$track = $this->traceTrack($track, 3);
 
-		$this->assertEquals($first_distance, $track->getDistance());
-		$this->assertGreaterThan($first_distance, $track->getDistance(true));
+		$this->assertEquals($first_distance, $track->calculateDistance());
+		$this->assertGreaterThan($first_distance, $track->calculateDistance(true));
 	}
 
 

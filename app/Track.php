@@ -55,7 +55,7 @@ class Track extends Model
 	 *
 	 * @return int Returns the total distance in meters
 	 */
-	public function getDistance(bool $force = false): int
+	public function calculateDistance(bool $force = false): int
 	{
 		if (is_numeric($this->distance) && $this->distance > 0 && ! $force) {
 			return $this->distance;

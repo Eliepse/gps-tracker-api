@@ -29,8 +29,8 @@ class StoreLocationsController
 			});
 
 		$track->locations()->saveMany($locations);
-		$track->load("locations:id,track_id,longitude,latitude");
-		$track->distance = $track->getDistance();
+		$track->load("locations:id,track_id,longitude,latitude,time");
+		$track->distance = $track->calculateDistance(true);
 		$track->duration = $track->calculateDuration(true);
 		$track->save();
 

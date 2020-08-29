@@ -40,7 +40,7 @@ class OptimizeTracksMetasCommand extends Command
 			/** @var Track $track */
 			foreach ($query->get() as $track) {
 				$track->load("locations");
-				$track->distance = $track->getDistance(true);
+				$track->distance = $track->calculateDistance(true);
 				$track->duration = $track->calculateDuration(true);
 				$track->save();
 				$progress->advance();

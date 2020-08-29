@@ -37,7 +37,7 @@ class StorePointsController
 
 		$track->locations()->saveMany($locations);
 		$track->load("locations:id,track_id,longitude,latitude");
-		$track->distance = $track->getDistance();
+		$track->distance = $track->calculateDistance(true);
 		$track->duration = $track->calculateDuration(true);
 		$track->save();
 

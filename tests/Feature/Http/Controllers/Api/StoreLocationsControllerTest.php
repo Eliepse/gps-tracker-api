@@ -3,7 +3,6 @@
 namespace Tests\Feature\Http\Controllers\Api;
 
 use App\Events\LocationsStoredEvent;
-use App\User;
 use App\Location;
 use App\Track;
 use App\Http\Controllers\Api\StoreLocationsController;
@@ -44,7 +43,7 @@ class StoreLocationsControllerTest extends TestCase
 
 
 	/** @test */
-	public function it_fire_an_events()
+	public function it_fires_an_events()
 	{
 		$track = factory(Track::class)->create();
 
@@ -52,5 +51,26 @@ class StoreLocationsControllerTest extends TestCase
 
 		$this->withHeader("Authorization", "Bearer " . $track->user->api_token)
 			->postJson(action(StoreLocationsController::class, [$track]), ["locations" => $this->makeLocations()]);
+	}
+
+
+	/** @test */
+	public function it_updates_tracks_metas()
+	{
+		/** @var Track $track */
+		$track = factory(Track::class)->create();
+		$this->withHeader("Authorization", "Bearer " . $track->user->api_token)
+			->postJson(action(StoreLocationsController::class, [$track]), ["locations" => $this->makeLocations()]);
+		$track->refresh();
+
+		$this->assertGreaterThan(0, $pastDuration = $track->duration->totalSeconds);
+		$this->assertGreaterThan(0, $pastDistance = $track->distance);
+
+		$this->withHeader("Authorization", "Bearer " . $track->user->api_token)
+			->postJson(action(StoreLocationsController::class, [$track]), ["locations" => $this->makeLocations()]);
+		$track->refresh();
+
+		$this->assertGreaterThan($pastDuration, $track->duration->totalSeconds);
+		$this->assertGreaterThan($pastDistance, $track->distance);
 	}
 }
