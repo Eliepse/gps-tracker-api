@@ -18,7 +18,7 @@ class CleanEmptyCoursesCommand extends Command
 	}
 
 
-	public function handle(): void
+	public function handle(): int
 	{
 		$tracks = Track::query()
 			->select(['id'])
@@ -29,5 +29,7 @@ class CleanEmptyCoursesCommand extends Command
 		$count = $tracks->count();
 		$tracks->each(fn(Track $track) => $track->delete());
 		$this->info("$count tracks deleted.");
+
+		return 0;
 	}
 }

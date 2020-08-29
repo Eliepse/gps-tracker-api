@@ -19,7 +19,7 @@ class CacheUsersDistancesCommand extends Command
 	}
 
 
-	public function handle(): void
+	public function handle(): int
 	{
 		foreach (User::all() as $user) {
 			$query = $user->tracks();
@@ -41,5 +41,7 @@ class CacheUsersDistancesCommand extends Command
 			$progress->finish();
 			$this->line("");
 		}
+
+		return 0;
 	}
 }

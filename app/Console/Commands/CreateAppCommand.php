@@ -40,7 +40,7 @@ class CreateAppCommand extends Command
 	 *
 	 * @return void
 	 */
-	public function handle()
+	public function handle(): int
 	{
 		$app = new User();
 		$app->name = $this->argument('name');
@@ -53,5 +53,7 @@ class CreateAppCommand extends Command
 		$this->info("App ID      : " . $app->uuid);
 		$this->info("App Password: " . $password);
 		$this->info("Token API   : " . $app->api_token);
+
+		return 0;
 	}
 }
