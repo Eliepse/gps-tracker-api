@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 final class TrackResourceController
@@ -17,7 +18,7 @@ final class TrackResourceController
 	{
 		$user = $user ?: $request->user();
 		$tracks = [];
-		$locations = Location::query()
+		$locations = DB::table('locations')
 			->select(['track_id', 'longitude', 'latitude'])
 			->orderBy('time')
 			->whereIn('track_id', function (Builder $query) use ($user) {
@@ -36,6 +37,7 @@ final class TrackResourceController
 				'latitude' => $location->latitude,
 			];
 		}
+
 		return response()->json(array_values($tracks));
 	}
 
