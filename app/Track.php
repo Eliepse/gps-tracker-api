@@ -65,11 +65,7 @@ class Track extends Model
 			return 0;
 		}
 
-		$this->distance = 0.0;
-		for ($h = 0, $i = 1; $i < $this->locations->count(); $i++, $h++) {
-			$this->distance += $this->locations[ $i ]->distanceTo($this->locations[ $h ]);
-		}
-		return $this->distance = round($this->distance);
+		return $this->distance = Location::pathLength($this->locations);
 	}
 
 
@@ -114,7 +110,8 @@ class Track extends Model
 		}
 
 		$interval = CarbonInterval::create(0);
-		for ($h = 0, $i = 1; $i < $this->locations->count(); $i++, $h++) {
+		$count = $this->locations->count();
+		for ($h = 0, $i = 1; $i < $count; $i++, $h++) {
 			$distance = $this->locations[ $i ]->distanceTo($this->locations[ $h ]);
 			$duration = $this->locations[ $h ]->time->diffAsCarbonInterval($this->locations[ $i ]->time);
 			if ($distance / $duration->totalSeconds >= config("general.calculations.idle_speed_thershold")) {

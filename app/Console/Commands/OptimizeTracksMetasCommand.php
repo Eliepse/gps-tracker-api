@@ -3,6 +3,7 @@
 
 namespace App\Console\Commands;
 
+use App\Location;
 use App\Track;
 use App\User;
 use Carbon\Carbon;
@@ -27,6 +28,7 @@ class OptimizeTracksMetasCommand extends Command
 		foreach (User::all() as $user) {
 			$query = $user->tracks();
 
+
 			if (! $this->option("force")) {
 				$query->where(function (Builder $builder) {
 					$builder->where("distance", 0)
@@ -39,8 +41,7 @@ class OptimizeTracksMetasCommand extends Command
 
 			/** @var Track $track */
 			foreach ($query->get() as $track) {
-				$track->load("locations");
-				$track->distance = $track->calculateDistance(true);
+				$track->distance = Location::trackLength($track->id);
 				$track->duration = $track->calculateDuration(true);
 				$track->save();
 				$progress->advance();
@@ -49,6 +50,12 @@ class OptimizeTracksMetasCommand extends Command
 			$progress->finish();
 			$this->line("");
 		}
+
+		$this->info(
+			"\nIt took "
+			. Carbon::createFromTimestamp($_SERVER["REQUEST_TIME"])->shortAbsoluteDiffForHumans()
+			. " to run this command."
+		);
 
 		return 0;
 	}
