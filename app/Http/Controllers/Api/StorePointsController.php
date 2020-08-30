@@ -6,7 +6,6 @@ use App\Events\LocationsStoredEvent;
 use App\Http\Requests\StorePointsRequest;
 use App\Location;
 use App\Track;
-use App\Http\Requests\StoreLocationsRequest;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -36,7 +35,7 @@ class StorePointsController
 			});
 
 		$track->locations()->saveMany($locations);
-		$track->load("locations:id,track_id,longitude,latitude");
+		$track->load("locations");
 		$track->distance = $track->calculateDistance(true);
 		$track->duration = $track->calculateDuration(true);
 		$track->save();
