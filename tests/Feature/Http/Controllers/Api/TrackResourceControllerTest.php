@@ -36,7 +36,7 @@ class TrackResourceControllerTest extends TestCase
 		$this->withHeader("Authorization", "Bearer " . $user->api_token)
 			->getJson("api/tracks")
 			->assertOk()
-			->assertJsonStructure([["id", "user_id", "locations" => [["id", "track_id", "longitude", "latitude"]]]]);
+			->assertJsonStructure([["id", "locations" => [["longitude", "latitude"]]]]);
 	}
 
 
@@ -52,7 +52,7 @@ class TrackResourceControllerTest extends TestCase
 
 		$this->getJson(action([TrackResourceController::class, "index"], [$user]))
 			->assertOk()
-			->assertJsonStructure([["id", "user_id", "locations" => [["id", "track_id", "longitude", "latitude"]]]]);
+			->assertJsonStructure([["id", "locations" => [["longitude", "latitude"]]]]);
 	}
 
 
@@ -64,6 +64,6 @@ class TrackResourceControllerTest extends TestCase
 		factory(Location::class, 2)->create(["track_id" => $track]);
 		$this->getJson(action([TrackResourceController::class, "show"], [$track]))
 			->assertOk()
-			->assertJsonStructure(["id", "locations" => [["id", "track_id", "longitude", "latitude"]]]);
+			->assertJsonStructure(["id", "locations" => [["longitude", "latitude"]]]);
 	}
 }
