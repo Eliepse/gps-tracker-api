@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Location;
 use App\User;
 use App\Track;
 use Carbon\Carbon;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,15 +16,27 @@ final class TrackResourceController
 	public function index(Request $request, User $user = null): JsonResponse
 	{
 		$user = $user ?: $request->user();
-
-		// TODO: use Laravel's Resources
-		$tracks = $user->tracks()
-			->select(["id", "user_id"])
-			->whereDate("created_at", ">=", Carbon::today()->subMonth())
-			->with(["locations:id,track_id,longitude,latitude"])
+		$tracks = [];
+		$locations = Location::query()
+			->select(['track_id', 'longitude', 'latitude'])
+			->orderBy('time')
+			->whereIn('track_id', function (Builder $query) use ($user) {
+				$query->select('id')->from('tracks')
+					->where('user_id', $user->id)
+					->whereDate('created_at', '>=', Carbon::today()->subMonth());
+			})
 			->get();
 
-		return response()->json($tracks);
+		foreach ($locations as $location) {
+			if (! isset($tracks[ $location->track_id ])) {
+				$tracks[ $location->track_id ] = ['id' => $location->track_id, 'locations' => []];
+			}
+			$tracks[ $location->track_id ]['locations'][] = [
+				'longitude' => $location->longitude,
+				'latitude' => $location->latitude,
+			];
+		}
+		return response()->json(array_values($tracks));
 	}
 
 
