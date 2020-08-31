@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class OptimizeTracksMetasCommand extends Command
 {
@@ -41,9 +42,16 @@ class OptimizeTracksMetasCommand extends Command
 
 			/** @var Track $track */
 			foreach ($query->get() as $track) {
-				$track->distance = Location::trackLength($track->id);
-				$track->duration = $track->calculateDuration(true);
-				$track->save();
+				$locations = DB::table("locations")
+					->select(["longitude", "latitude", "time"])
+					->where("track_id", $track->id)
+					->orderBy("time")
+					->get();
+				$track->update([
+					"distance" => Location::pathLength($locations),
+					"duration" => Carbon::createFromTimeString($locations->last()->time)
+						->diffAsCarbonInterval(Carbon::createFromTimeString($locations->first()->time)),
+				]);
 				$progress->advance();
 			}
 
@@ -53,8 +61,8 @@ class OptimizeTracksMetasCommand extends Command
 
 		$this->info(
 			"\nIt took "
-			. Carbon::createFromTimestamp($_SERVER["REQUEST_TIME"])->shortAbsoluteDiffForHumans()
-			. " to run this command."
+			. Carbon::createFromTimestamp($_SERVER["REQUEST_TIME"])->diffInMilliseconds()
+			. "ms to run this command."
 		);
 
 		return 0;
