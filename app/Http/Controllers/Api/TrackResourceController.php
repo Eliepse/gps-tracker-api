@@ -18,24 +18,26 @@ final class TrackResourceController
 	{
 		$user = $user ?: $request->user();
 		$tracks = [];
-		$locations = DB::table('locations')
+		$query = DB::table('locations')
 			->select(['track_id', 'longitude', 'latitude'])
 			->orderBy('time')
 			->whereIn('track_id', function (Builder $query) use ($user) {
 				$query->select('id')->from('tracks')
 					->where('user_id', $user->id)
 					->whereDate('created_at', '>=', Carbon::today()->subMonth());
-			})
-			->get();
+			});
 
-		foreach ($locations as $location) {
+		// Filter by ids
+		// And prevent sql inject by taking only integers
+		if ($ids = $request->get("ids", [])) {
+			$query->whereIn("track_id", array_map(fn($val) => intval($val), $ids));
+		}
+
+		foreach ($query->get() as $location) {
 			if (! isset($tracks[ $location->track_id ])) {
 				$tracks[ $location->track_id ] = ['id' => $location->track_id, 'locations' => []];
 			}
-			$tracks[ $location->track_id ]['locations'][] = [
-				'longitude' => $location->longitude,
-				'latitude' => $location->latitude,
-			];
+			array_push($tracks[ $location->track_id ]['locations'], [$location->latitude, $location->longitude]);
 		}
 
 		return response()->json(array_values($tracks));

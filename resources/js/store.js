@@ -22,10 +22,10 @@ export default new Vuex.Store({
 		},
 	},
 	actions: {
-		loadTrack: async function (ctx, id) {
+		loadTrack: async function (ctx, {id, user_id}) {
 			try {
-				const response = await axios.get(`/api/tracks/${id}`);
-				await ctx.commit("addTracks", [response.data]);
+				const response = await axios.get(`/api/users/${user_id}/tracks`, {params: {ids: [id]}});
+				await ctx.commit("addTracks", response.data);
 			} catch (err) {
 				console.error(err);
 			}

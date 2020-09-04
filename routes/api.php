@@ -28,4 +28,5 @@ Route::middleware('auth:api')->post("tracks", TrackResourceController::class . "
 Route::middleware('auth:api')->get("tracks", TrackResourceController::class . "@index");
 
 Route::get("users/{user}/tracks", TrackResourceController::class . "@index");
+/** @deprecated Use "users/{user}/tracks" with the id in 'ids' array parameter */
 Route::get("tracks/{track}", TrackResourceController::class . "@show");
