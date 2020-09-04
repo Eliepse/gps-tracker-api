@@ -25,7 +25,12 @@ export default new Vuex.Store({
 		loadTrack: async function (ctx, {id, user_id}) {
 			try {
 				const response = await axios.get(`/api/users/${user_id}/tracks`, {params: {ids: [id]}});
-				await ctx.commit("addTracks", response.data);
+				const data = response.data;
+				await ctx.commit("addTracks", data.data);
+				return {
+					bounds: data.bounds,
+					rows: data.rows,
+				};
 			} catch (err) {
 				console.error(err);
 			}
@@ -33,7 +38,12 @@ export default new Vuex.Store({
 		loadUserTracks: async function (ctx, user_id) {
 			try {
 				const response = await axios.get(`/api/users/${user_id}/tracks`);
-				await ctx.commit("addTracks", response.data);
+				const data = response.data;
+				await ctx.commit("addTracks", data.data);
+				return {
+					bounds: data.bounds,
+					rows: data.rows,
+				};
 			} catch (err) {
 				console.error(err);
 			}
