@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Casts\Mysql\Time;
+use App\Helpers\Distances;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Exception;
@@ -65,7 +66,7 @@ class Track extends Model
 			return 0;
 		}
 
-		return $this->distance = Location::pathLength($this->locations);
+		return $this->distance = Distances::pathLength($this->locations);
 	}
 
 

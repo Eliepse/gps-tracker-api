@@ -3,11 +3,10 @@
 
 namespace App\Console\Commands;
 
-use App\Location;
+use App\Helpers\Distances;
 use App\Track;
 use App\User;
 use Carbon\Carbon;
-use Carbon\CarbonInterval;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -48,7 +47,7 @@ class OptimizeTracksMetasCommand extends Command
 					->orderBy("time")
 					->get();
 				$track->update([
-					"distance" => Location::pathLength($locations),
+					"distance" => Distances::pathLength($locations),
 					"duration" => Carbon::createFromTimeString($locations->last()->time)
 						->diffAsCarbonInterval(Carbon::createFromTimeString($locations->first()->time)),
 				]);

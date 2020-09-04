@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\Distances;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -47,7 +48,7 @@ class Location extends Model
 	 */
 	public function distanceTo(Location $location): float
 	{
-		return self::distanceBetween(
+		return Distances::distanceBetweenGPS(
 			$this->longitude, $this->latitude,
 			$location->longitude, $location->latitude,
 		);
@@ -98,37 +99,20 @@ class Location extends Model
 	}
 
 
+	/**
+	 * @param int $track_id
+	 *
+	 * @return int
+	 * @deprecated Use Distances::pathLength directly instead
+	 */
 	public static function trackLength(int $track_id): int
 	{
-		return self::pathLength(
+		return Distances::pathLength(
 			DB::table("locations")
 				->select(["longitude", "latitude"])
 				->where("track_id", $track_id)
 				->orderBy("time")
 				->get()
 		);
-	}
-
-
-	public static function pathLength(Collection $locations): int
-	{
-		$distance = 0.0;
-		$count = count($locations);
-		for ($h = 0, $i = 1; $i < $count; $i++, $h++) {
-			$distance += self::distanceBetween(
-				$locations[ $i ]->longitude, $locations[ $i ]->latitude,
-				$locations[ $h ]->longitude, $locations[ $h ]->latitude,
-			);
-		}
-		return round($distance);
-	}
-
-
-	public static function distanceBetween(float $a_lng, float $a_lat, float $b_lng, float $b_lat): float
-	{
-		// Equirectangular calculation
-		$x = deg2rad(abs($b_lng) - abs($a_lng)) * cos(deg2rad($a_lat + $b_lat) / 2);
-		$y = deg2rad($a_lat - $b_lat);
-		return sqrt($x * $x + $y * $y) * 6378137;
 	}
 }
