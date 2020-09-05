@@ -20,13 +20,13 @@ function distance(a, b) {
 }
 
 function getSpeedColor(speed, min, max) {
-  //function pickHex(color1, color2, weight) {
+  speed = Math.max(Math.min(speed, max), min)
   const w1 = (speed - min) / max;
   const w2 = 1 - w1;
   const rgb = [
-    Math.round(color1[0] * w1 + color2[0] * w2).toString(16),
-    Math.round(color1[1] * w1 + color2[1] * w2).toString(16),
-    Math.round(color1[2] * w1 + color2[2] * w2).toString(16),
+    Math.round(color1[0] * w1 + color2[0] * w2).toString(16).padStart(2, '0'),
+    Math.round(color1[1] * w1 + color2[1] * w2).toString(16).padStart(2, '0'),
+    Math.round(color1[2] * w1 + color2[2] * w2).toString(16).padStart(2, '0'),
   ];
   return `#${rgb[0]}${rgb[1]}${rgb[2]}`;
 }
@@ -63,17 +63,18 @@ export default {
             const track = this.$store.state.tracks[this.track_id];
             const line = getNewPolyline();
 
-            for (let i = 0; i < track.locations.length - 1; i++) {
+            for (let i = 0; i < track.locations.length - 2; i++) {
               const a = track.locations[i];
               const b = track.locations[i + 1];
-              const speedKmH = (distance(a, b) / (b[2] - a[2])) * 3.6;
+              const c = track.locations[i + 2];
+              const speedA = distance(a, b) / (b[2] - a[2]);
+              const speedB = distance(b, c) / (c[2] - b[2]);
+              const speedKmH = ((speedA + speedB) / 2) * 3.6;
+
               getNewPolyline()
-                  .setLatLngs([a, b]).addTo(this.map)
-                  .setStyle({
-                    color: getSpeedColor(Math.min(speedKmH, 40), 0, 40),
-                    opacity: 1,
-                    weight: 8,
-                  })
+                  .setLatLngs([a, b, c])
+                  .addTo(this.map)
+                  .setStyle({color: getSpeedColor(speedKmH, 5, 40), opacity: 1, weight: 8})
                   .addTo(this.map);
             }
 
